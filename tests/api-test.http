@@ -1,0 +1,43 @@
+### List semua menu (filter type = main_menu)
+GET http://portal-pemerintah.kie:8080/api/menu-crud?type=main_menu
+Accept: application/json
+
+###
+
+### Tambah menu baru
+POST http://portal-pemerintah.kie:8080/api/menu-crud
+Content-Type: application/json
+
+{
+  "type": "main_menu",
+  "title": "Menu Baru",
+  "link": "/menu-baru",
+  "icon": "fas fa-link",
+  "sort_order": 5,
+  "target": "_self",
+  "is_external": false,
+  "is_active": true
+}
+
+###
+
+### Update menu id=1
+PUT http://portal-pemerintah.kie:8080/api/menu-crud/1
+Content-Type: application/json
+
+{
+  "type": "main_menu",
+  "title": "Menu Home Updated",
+  "link": "/",
+  "icon": "fas fa-home",
+  "sort_order": 1,
+  "target": "_self",
+  "is_external": false,
+  "is_active": true
+}
+
+###
+
+### Hapus menu id=1
+DELETE http://portal-pemerintah.kie:8080/api/menu-crud/1
+Accept: application/json
