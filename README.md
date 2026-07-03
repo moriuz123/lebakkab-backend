@@ -6,12 +6,13 @@ LebakKab Backend adalah sistem API pusat dan *dashboard* manajemen (agregator) u
 - **Arsitektur Multi-tenant:** Data difilter dan dikelola secara otomatis per OPD (menggunakan *trait* `FiltersByOpd`), memungkinkan setiap Dinas memiliki kontennya masing-masing tanpa tercampur.
 - **Admin Panel:** Dibangun menggunakan [FilamentPHP](https://filamentphp.com/) untuk pengelolaan berita, *banner*, pengaturan, dan dokumen yang cepat dan mudah.
 - **S3 Object Storage (MinIO):** Penyimpanan media (gambar/PDF) tidak lagi membebani server utama, melainkan dipindahkan ke MinIO yang bertindak sebagai CDN dan *Object Storage* ala Enterprise S3.
-- **Performa Tinggi & API Ready:** Dirancang untuk melayani ratusan *request* bersamaan dari berbagai website *frontend* dengan batas *rate-limit* yang ditingkatkan dan konfigurasi CORS global.
-- **Infrastruktur Terkontainer (Docker):** Seluruh ekosistem (Nginx, PHP-FPM, MySQL, dan MinIO) terbungkus rapi dalam `docker-compose.yml` untuk kemudahan *deployment*.
+- **Performa Tinggi & API Ready:** Dirancang untuk melayani ratusan *request* bersamaan dari berbagai website *frontend* dengan batas *rate-limit* yang ditingkatkan, konfigurasi CORS global, dan integrasi **Redis** sebagai *Caching Layer*.
+- **Infrastruktur Terkontainer (Docker):** Seluruh ekosistem (Nginx, PHP-FPM, MySQL, Redis, dan MinIO) terbungkus rapi dalam `docker-compose.yml` untuk kemudahan *deployment*.
 
 ## Teknologi yang Digunakan (Tech Stack)
 - **Framework:** PHP 8.2 / Laravel 10
 - **Database:** MySQL 8.0
+- **Cache:** Redis
 - **Storage:** MinIO (S3-compatible object storage)
 - **Server:** Nginx
 - **Infrastruktur:** Docker & Docker Compose
@@ -41,6 +42,13 @@ LebakKab Backend adalah sistem API pusat dan *dashboard* manajemen (agregator) u
    AWS_URL=http://localhost:9000/lebakkab-media
    AWS_ENDPOINT=http://backend_minio:9000
    AWS_USE_PATH_STYLE_ENDPOINT=true
+
+   # Konfigurasi Cache Redis
+   CACHE_DRIVER=redis
+   REDIS_CLIENT=predis
+   REDIS_HOST=redis
+   REDIS_PASSWORD=null
+   REDIS_PORT=6379
    ```
 
 3. Jalankan *container* Docker:
