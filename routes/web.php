@@ -14,8 +14,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return response()->json([
-        'message' => 'Backend Laravel berjalan normal',
-        'status' => 'ok'
-    ]);
+    return redirect('/admin');
 });

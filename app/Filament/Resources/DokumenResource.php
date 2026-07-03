@@ -55,7 +55,7 @@ class DokumenResource extends Resource
                     ->label('Deskripsi')
                     ->rows(3),
 
-                Forms\Components\Select::make('kategori_dokumen_id')
+                Select::make('kategori_dokumen_id')
                     ->label('Kategori')
                     ->relationship('kategori', 'nama', fn (\Illuminate\Database\Eloquent\Builder $query) => \App\Filament\Support\OpdFields::applyOpdScope($query))
                     ->required(),

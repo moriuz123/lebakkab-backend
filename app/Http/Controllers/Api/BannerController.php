@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Api\Concerns\FiltersByOpd;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Banner;
 
 class BannerController extends Controller
@@ -29,8 +30,8 @@ class BannerController extends Controller
         }
 
         $banners = $query->get()->map(function ($banner) {
-            // Karena path 'gambar' di DB sudah lengkap, tinggal tambah prefix 'storage/'
-            $banner->gambar_url = asset('storage/' . $banner->gambar);
+            // Karena path 'gambar' di DB sudah lengkap, generate URL otomatis (S3/Lokal)
+            $banner->gambar_url = Storage::url($banner->gambar);
             return $banner;
         });
 
@@ -44,7 +45,7 @@ class BannerController extends Controller
             ->select('id', 'opd_id', 'tampil_di_portal', 'judul', 'gambar', 'slug', 'kategori', 'created_at')
             ->get()
             ->map(function ($banner) {
-                $banner->gambar_url = asset('storage/' . $banner->gambar);
+                $banner->gambar_url = Storage::url($banner->gambar);
                 return $banner;
             });
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use Illuminate\Support\Facades\Storage;
 
 class SettingsController extends Controller
 {
@@ -25,10 +26,10 @@ class SettingsController extends Controller
                 'site_name'        => $setting->site_name ?? '',
                 'tagline'          => $setting->tagline ?? '',
                 'satuan_kerja'     => $setting->satuan_kerja ?? '',
-                'logo_url'         => $setting && $setting->logo ? asset('storage/' . $setting->logo) : null,
-                 'favicon_url'      => $setting && $setting->favicon ? asset('storage/' . $setting->favicon) : null,
-                'logo_tagline_url' => $setting && $setting->logo_tagline ? asset('storage/' . $setting->logo_tagline) : null,
-                'photo_bupati'     => $setting && $setting->photo_bupati ? asset('storage/' . $setting->photo_bupati) : null,
+                'logo_url'         => $setting && $setting->logo ? Storage::url($setting->logo) : null,
+                 'favicon_url'      => $setting && $setting->favicon ? Storage::url($setting->favicon) : null,
+                'logo_tagline_url' => $setting && $setting->logo_tagline ? Storage::url($setting->logo_tagline) : null,
+                'photo_bupati'     => $setting && $setting->photo_bupati ? Storage::url($setting->photo_bupati) : null,
             ],
         ]);
     }
@@ -55,7 +56,7 @@ class SettingsController extends Controller
             'data'   => [
                 'site_name'    => $setting->site_name ?? '',
                 'satuan_kerja' => $setting->satuan_kerja ?? '',
-                'logo_url'     => $setting && $setting->logo ? asset('storage/' . $setting->logo) : null,
+                'logo_url'     => $setting && $setting->logo ? Storage::url($setting->logo) : null,
                 'address'      => $setting->address ?? '',
                 'phone'        => $setting->phone ?? '',
                 'email'        => $setting->email ?? '',
