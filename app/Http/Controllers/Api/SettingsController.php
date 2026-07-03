@@ -5,20 +5,23 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 
 class SettingsController extends Controller
 {
     public function headerData()
     {
-        $setting = Setting::select(
-            'site_name',
-            'tagline',
-            'satuan_kerja',
-            'logo',
-            'logo_tagline',
-            'favicon',
-            'photo_bupati'
-        )->first();
+        $setting = Cache::remember('settings.header', 3600, function () {
+            return Setting::select(
+                'site_name',
+                'tagline',
+                'satuan_kerja',
+                'logo',
+                'logo_tagline',
+                'favicon',
+                'photo_bupati'
+            )->first();
+        });
 
         return response()->json([
             'status' => 'success',
@@ -36,20 +39,22 @@ class SettingsController extends Controller
 
     public function footerData()
     {
-        $setting = Setting::select(
-            'site_name',
-            'satuan_kerja',
-            'logo',
-            'address',
-            'phone',
-            'email',
-            'facebook',
-            'instagram',
-            'twitter',
-            'youtube',
-            'whatsapp',
-            'footer_text'
-        )->first();
+        $setting = Cache::remember('settings.footer', 3600, function () {
+            return Setting::select(
+                'site_name',
+                'satuan_kerja',
+                'logo',
+                'address',
+                'phone',
+                'email',
+                'facebook',
+                'instagram',
+                'twitter',
+                'youtube',
+                'whatsapp',
+                'footer_text'
+            )->first();
+        });
 
         return response()->json([
             'status' => 'success',
