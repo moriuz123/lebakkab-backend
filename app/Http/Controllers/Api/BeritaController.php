@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Concerns\FiltersByOpd;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 use App\Models\Berita;
 
 class BeritaController extends Controller
@@ -15,17 +16,22 @@ class BeritaController extends Controller
     // 🔹 Semua berita (default 6 terbaru)
     public function index(Request $request)
     {
-        $beritas = $this->applyOpdFilter(Berita::with(['kategori', 'opd']), $request)
-            ->published()
-            ->orderBy('tanggal_publish', 'desc')
-            ->limit(10)
-            ->get()
-            ->map(function ($item) {
-                $item->image = $item->thumbnail
-                    ? Storage::url($item->thumbnail)
-                    : asset('images/default-thumbnail.jpg');
-                return $item;
-            });
+        $opd = $request->query('opd_id', $request->query('opd', 'all'));
+        $cacheKey = "berita.index.opd_{$opd}";
+
+        $beritas = Cache::remember($cacheKey, 3600, function () use ($request) {
+            return $this->applyOpdFilter(Berita::with(['kategori', 'opd']), $request)
+                ->published()
+                ->orderBy('tanggal_publish', 'desc')
+                ->limit(10)
+                ->get()
+                ->map(function ($item) {
+                    $item->image = $item->thumbnail
+                        ? Storage::url($item->thumbnail)
+                        : asset('images/default-thumbnail.jpg');
+                    return $item;
+                });
+        });
 
         return response()->json($beritas);
     }
@@ -33,10 +39,15 @@ class BeritaController extends Controller
     // 🔹 Detail berita by slug
     public function show(Request $request, $slug)
     {
-        $berita = $this->applyOpdFilter(Berita::with(['kategori', 'opd']), $request)
-            ->published()
-            ->where('slug', $slug)
-            ->firstOrFail();
+        $opd = $request->query('opd_id', $request->query('opd', 'all'));
+        $cacheKey = "berita.show.{$slug}.opd_{$opd}";
+
+        $berita = Cache::remember($cacheKey, 3600, function () use ($request, $slug) {
+            return $this->applyOpdFilter(Berita::with(['kategori', 'opd']), $request)
+                ->published()
+                ->where('slug', $slug)
+                ->firstOrFail();
+        });
 
         // ✅ Tambah counter views otomatis
         $berita->increment('views');
@@ -52,17 +63,22 @@ class BeritaController extends Controller
     // 🔹 Filter berita berdasarkan kategori slug
     public function byKategori(Request $request, $slug)
     {
-        $beritas = $this->applyOpdFilter(Berita::with(['kategori', 'opd']), $request)
-            ->byKategoriSlug($slug)
-            ->published()
-            ->orderBy('tanggal_publish', 'desc')
-            ->get()
-            ->map(function ($item) {
-                $item->image = $item->thumbnail
-                    ? Storage::url($item->thumbnail)
-                    : asset('images/default-thumbnail.jpg');
-                return $item;
-            });
+        $opd = $request->query('opd_id', $request->query('opd', 'all'));
+        $cacheKey = "berita.kategori.{$slug}.opd_{$opd}";
+
+        $beritas = Cache::remember($cacheKey, 3600, function () use ($request, $slug) {
+            return $this->applyOpdFilter(Berita::with(['kategori', 'opd']), $request)
+                ->byKategoriSlug($slug)
+                ->published()
+                ->orderBy('tanggal_publish', 'desc')
+                ->get()
+                ->map(function ($item) {
+                    $item->image = $item->thumbnail
+                        ? Storage::url($item->thumbnail)
+                        : asset('images/default-thumbnail.jpg');
+                    return $item;
+                });
+        });
 
         return response()->json($beritas);
     }
@@ -70,9 +86,14 @@ class BeritaController extends Controller
     // 🔹 Berita terbaru (default 5)
     public function latest(Request $request)
     {
-        $beritas = $this->applyOpdFilter(Berita::with(['kategori', 'opd']), $request)
-            ->latestNews()
-            ->get();
+        $opd = $request->query('opd_id', $request->query('opd', 'all'));
+        $cacheKey = "berita.latest.opd_{$opd}";
+
+        $beritas = Cache::remember($cacheKey, 3600, function () use ($request) {
+            return $this->applyOpdFilter(Berita::with(['kategori', 'opd']), $request)
+                ->latestNews()
+                ->get();
+        });
 
         return response()->json($beritas);
     }
@@ -80,9 +101,14 @@ class BeritaController extends Controller
     // 🔹 Berita populer (default 5)
     public function popular(Request $request)
     {
-        $beritas = $this->applyOpdFilter(Berita::with(['kategori', 'opd']), $request)
-            ->popularNews()
-            ->get();
+        $opd = $request->query('opd_id', $request->query('opd', 'all'));
+        $cacheKey = "berita.popular.opd_{$opd}";
+
+        $beritas = Cache::remember($cacheKey, 3600, function () use ($request) {
+            return $this->applyOpdFilter(Berita::with(['kategori', 'opd']), $request)
+                ->popularNews()
+                ->get();
+        });
 
         return response()->json($beritas);
     }
