@@ -1,64 +1,66 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# LebakKab Portal - Backend Aggregator API
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+LebakKab Backend adalah sistem API pusat dan *dashboard* manajemen (agregator) untuk portal website Kabupaten Lebak. Sistem ini bertindak sebagai pusat kendali (*hub*) *multi-tenant* yang mengelola data dari berbagai Organisasi Perangkat Daerah (OPD) atau Dinas secara terpusat.
 
-## About Laravel
+## Fitur Utama
+- **Arsitektur Multi-tenant:** Data difilter dan dikelola secara otomatis per OPD (menggunakan *trait* `FiltersByOpd`), memungkinkan setiap Dinas memiliki kontennya masing-masing tanpa tercampur.
+- **Admin Panel:** Dibangun menggunakan [FilamentPHP](https://filamentphp.com/) untuk pengelolaan berita, *banner*, pengaturan, dan dokumen yang cepat dan mudah.
+- **S3 Object Storage (MinIO):** Penyimpanan media (gambar/PDF) tidak lagi membebani server utama, melainkan dipindahkan ke MinIO yang bertindak sebagai CDN dan *Object Storage* ala Enterprise S3.
+- **Performa Tinggi & API Ready:** Dirancang untuk melayani ratusan *request* bersamaan dari berbagai website *frontend* dengan batas *rate-limit* yang ditingkatkan dan konfigurasi CORS global.
+- **Infrastruktur Terkontainer (Docker):** Seluruh ekosistem (Nginx, PHP-FPM, MySQL, dan MinIO) terbungkus rapi dalam `docker-compose.yml` untuk kemudahan *deployment*.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Teknologi yang Digunakan (Tech Stack)
+- **Framework:** PHP 8.2 / Laravel 10
+- **Database:** MySQL 8.0
+- **Storage:** MinIO (S3-compatible object storage)
+- **Server:** Nginx
+- **Infrastruktur:** Docker & Docker Compose
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Panduan Instalasi (Local Development)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Persyaratan Sistem
+- Docker dan Docker Compose
 
-## Learning Laravel
+### Langkah Instalasi
+1. Clone repositori:
+   ```bash
+   git clone https://github.com/moriuz123/lebakkab-backend.git
+   cd lebakkab-backend
+   ```
+2. Atur *Environment Variables*:
+   ```bash
+   cp .env.example .env
+   ```
+   Pastikan konfigurasi MinIO sudah terpasang dengan benar di file `.env`:
+   ```env
+   FILESYSTEM_DRIVER=s3
+   AWS_ACCESS_KEY_ID=minioadmin
+   AWS_SECRET_ACCESS_KEY=minioadmin
+   AWS_DEFAULT_REGION=us-east-1
+   AWS_BUCKET=lebakkab-media
+   AWS_URL=http://localhost:9000/lebakkab-media
+   AWS_ENDPOINT=http://backend_minio:9000
+   AWS_USE_PATH_STYLE_ENDPOINT=true
+   ```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+3. Jalankan *container* Docker:
+   ```bash
+   docker-compose up -d
+   ```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+4. Masuk ke *container* aplikasi dan jalankan setup Laravel:
+   ```bash
+   docker exec -it backend_app bash
+   composer install
+   php artisan key:generate
+   php artisan migrate --seed
+   ```
 
-## Laravel Sponsors
+## Aturan Kontribusi (Workflow & Contributing)
+Silakan merujuk pada file [CONTRIBUTING.md](CONTRIBUTING.md) untuk aturan detail pengembangan. Ringkasannya:
+- Dilarang melakukan *push* langsung ke branch `main`.
+- Pembuatan fitur atau perbaikan bug harus dilakukan di *branch* turunan dari `develop` (misal: `feature/...` atau `bugfix/...`).
+- Ajukan *Pull Request* (PR) yang ditargetkan ke branch `develop`.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+*Dikembangkan untuk Pemerintah Kabupaten Lebak.*
