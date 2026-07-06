@@ -40,7 +40,7 @@ LebakKab Backend adalah sistem API pusat dan *dashboard* manajemen (agregator) u
    AWS_DEFAULT_REGION=us-east-1
    AWS_BUCKET=lebakkab-media
    AWS_URL=http://localhost:9000/lebakkab-media
-   AWS_ENDPOINT=http://backend_minio:9000
+   AWS_ENDPOINT=http://minio:9000
    AWS_USE_PATH_STYLE_ENDPOINT=true
 
    # Konfigurasi Cache Redis
@@ -50,6 +50,10 @@ LebakKab Backend adalah sistem API pusat dan *dashboard* manajemen (agregator) u
    REDIS_PASSWORD=null
    REDIS_PORT=6379
    ```
+
+   **Catatan MinIO & Filament**:
+   - `AWS_ENDPOINT` menggunakan `minio:9000` (bukan `backend_minio`) karena AWS SDK menolak *hostname* yang mengandung karakter *underscore* (`_`).
+   - File *temporary* unggahan Livewire pada form Filament disetel ke disk `local` (`config/livewire.php`) untuk menghindari *error infinite loading* saat *preview* gambar.
 
 3. Jalankan *container* Docker:
    ```bash
