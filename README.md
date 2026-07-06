@@ -60,11 +60,24 @@ LebakKab Backend adalah sistem API pusat dan *dashboard* manajemen (agregator) u
    docker-compose up -d
    ```
 
-4. Masuk ke *container* aplikasi dan jalankan setup Laravel:
+4. Masuk ke *container* aplikasi dan jalankan instalasi *dependency*:
    ```bash
    docker exec -it backend_app bash
    composer install
    php artisan key:generate
+   exit
+   ```
+
+5. Import Database Bawaan (Legacy):
+   Sistem ini menggunakan gabungan tabel bawaan yang sudah ada dan tabel baru dari Laravel/Filament. Anda wajib mengimpor file `portal2.sql` terlebih dahulu sebelum menjalankan *migrate*:
+   ```bash
+   docker exec -i backend_mysql mysql -u root -proot db_portal < portal2.sql
+   ```
+
+6. Jalankan Migrasi & Seeder untuk Tabel Baru:
+   Setelah database bawaan terimpor, masuk kembali ke *container* aplikasi untuk mengeksekusi migrasi tabel baru:
+   ```bash
+   docker exec -it backend_app bash
    php artisan migrate --seed
    ```
 
