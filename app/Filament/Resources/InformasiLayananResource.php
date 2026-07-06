@@ -62,6 +62,7 @@ class InformasiLayananResource extends Resource
                 ->columnSpanFull(),
 
             FileUpload::make('cover')
+                ->disk('s3')
                 ->label('Cover')
                 ->image()
                 ->required()
@@ -91,6 +92,7 @@ class InformasiLayananResource extends Resource
         return $table
             ->columns([
                 ImageColumn::make('cover')
+                    ->disk('s3')
                     ->label('Cover')
                     ->square(),
 
@@ -141,8 +143,8 @@ class InformasiLayananResource extends Resource
                     Tables\Actions\DeleteAction::make()
                         ->after(function ($record) {
                             // Hapus file cover dari storage jika ada
-                            if ($record->cover && Storage::disk('public')->exists($record->cover)) {
-                                Storage::disk('public')->delete($record->cover);
+                            if ($record->cover && Storage::disk('s3')->exists($record->cover)) {
+                                Storage::disk('s3')->delete($record->cover);
                             }
                         }),
                 ])
@@ -155,8 +157,8 @@ class InformasiLayananResource extends Resource
                     ->after(function ($records) {
                         // Hapus file cover untuk setiap record yang dihapus massal
                         foreach ($records as $record) {
-                            if ($record->cover && Storage::disk('public')->exists($record->cover)) {
-                                Storage::disk('public')->delete($record->cover);
+                            if ($record->cover && Storage::disk('s3')->exists($record->cover)) {
+                                Storage::disk('s3')->delete($record->cover);
                             }
                         }
                     }),

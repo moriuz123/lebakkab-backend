@@ -71,8 +71,9 @@ class DokumenResource extends Resource
                     ->reactive(),
 
                 FileUpload::make('file_path')
+                ->disk('s3')
                     ->label('File PDF')
-                    ->disk('public')
+                    ->disk('s3')
                     ->directory('dokumens')
                     ->visibility('public')
                     ->acceptedFileTypes(['application/pdf'])

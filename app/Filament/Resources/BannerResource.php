@@ -54,6 +54,7 @@ class BannerResource extends Resource
                 ->required(),
 
             FileUpload::make('gambar')
+                ->disk('s3')
                 ->label('Gambar')
                 ->image()
                 ->directory('banner')
@@ -67,8 +68,9 @@ class BannerResource extends Resource
         return $table
             ->columns([
                 ImageColumn::make('gambar')
+                    ->disk('s3')
                     ->label('Gambar')
-                    ->disk('public')
+                    ->disk('s3')
                     ->width(80)
                     ->height(60),
 

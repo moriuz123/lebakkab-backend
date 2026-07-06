@@ -42,6 +42,7 @@ class HeroSliderResource extends Resource
                 ->placeholder('Teks deskripsi slider (opsional)'),
 
             FileUpload::make('gambar')
+                ->disk('s3')
                 ->image()
                 ->imagePreviewHeight('150') // ✅ Optimasi preview image
                 ->directory('hero-sliders')
@@ -68,6 +69,7 @@ class HeroSliderResource extends Resource
         return $table
             ->columns([
                 ImageColumn::make('gambar')
+                    ->disk('s3')
                     ->height(75)
                     ->width(100)
                     ->square(),
@@ -103,8 +105,8 @@ class HeroSliderResource extends Resource
                     DeleteAction::make()
                         // ✅ Tambahan: hapus file gambar setelah delete
                         ->after(function ($record) {
-                            if ($record->gambar && Storage::disk('public')->exists($record->gambar)) {
-                                Storage::disk('public')->delete($record->gambar);
+                            if ($record->gambar && Storage::disk('s3')->exists($record->gambar)) {
+                                Storage::disk('s3')->delete($record->gambar);
                             }
                         }),
                 ])

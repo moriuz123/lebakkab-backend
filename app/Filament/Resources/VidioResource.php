@@ -69,6 +69,7 @@ class VidioResource extends Resource
 
             ->columns([
                 ImageColumn::make("thumbnail")
+                    ->disk('s3')
                     ->label("Thumbnail")
                     ->getStateUsing(fn($record) => "https://img.youtube.com/vi/" . $record->sumber_youtube . "/mqdefault.jpg")
                     ->url(fn($record) => "https://www.youtube.com/watch?v=" . $record->sumber_youtube)

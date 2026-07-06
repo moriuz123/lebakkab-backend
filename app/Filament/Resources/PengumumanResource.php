@@ -63,14 +63,16 @@ class PengumumanResource extends Resource
                 ->columnSpanFull(),
 
             FileUpload::make('gambar')
+                ->disk('s3')
                 ->image()
                 ->directory('pengumuman-gambar')
                 ->label('Gambar'),
 
             FileUpload::make('file_lampiran')
+                ->disk('s3')
                 ->hint('(Bisa di Kosongkan Jika tidak ada.)')
                 ->label('File Lampiran')
-                ->disk('public')
+                ->disk('s3')
                 ->directory('pengumuman')
                 ->visibility('public'),
 
@@ -107,6 +109,7 @@ class PengumumanResource extends Resource
                     ->label('Judul'),
 
                 Tables\Columns\ImageColumn::make('gambar')
+                    ->disk('s3')
                     ->label('Gambar')
                     ->size(50),
 

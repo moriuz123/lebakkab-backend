@@ -64,6 +64,7 @@ class KecamatanResource extends Resource
                     ->required(),
 
                 FileUpload::make('logo')
+                ->disk('s3')
                     ->label('Logo')
                     ->image()
                     ->imageResizeMode('cover')
@@ -71,6 +72,7 @@ class KecamatanResource extends Resource
                     ->directory('kecamatan/logo'),
 
                 FileUpload::make('foto_kantor')
+                ->disk('s3')
                     ->label('Foto Kantor')
                     ->image()
                     ->imageResizeMode('cover')
@@ -102,6 +104,7 @@ class KecamatanResource extends Resource
         return $table
             ->columns([
                 ImageColumn::make('foto_kantor')
+                    ->disk('s3')
                     ->label('Foto')
                     ->circular()
                     ->height(60),

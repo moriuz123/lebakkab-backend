@@ -79,6 +79,7 @@ class FotoResource extends Resource
                 ->required(),
 
             FileUpload::make('gambar')
+                ->disk('s3')
                 ->label('Gambar')
                 ->image()
                 ->imageEditor() // Opsional
@@ -94,6 +95,7 @@ class FotoResource extends Resource
     {
         return [
             ImageColumn::make('gambar')
+                    ->disk('s3')
                 ->label('Foto')
                 ->width(100)
                 ->height(60),

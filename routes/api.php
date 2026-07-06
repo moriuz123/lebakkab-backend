@@ -36,10 +36,13 @@ Route::get('/hero-sliders', [HeroSliderController::class, 'index']);
 
 // ===== Modul Berita =====
 Route::get('/berita', [BeritaController::class, 'index']);
+Route::get('/berita-popular', [BeritaController::class, 'popular']);
 Route::get('/berita/kategori/{slug}', [BeritaController::class, 'byKategori']);
 Route::get('/berita/{slug}', [BeritaController::class, 'show']);
 Route::get('/berita-latest', [BeritaController::class, 'latest']);
-Route::get('/berita-popular', [BeritaController::class, 'popular']);
+
+// Kategori Berita
+Route::get('/kategori-berita', [App\Http\Controllers\Api\KategoriBeritaController::class, 'index']);
 
 // ===== Modul Pengumuman =====
 Route::get('/pengumuman', [PengumumanController::class, 'index']);

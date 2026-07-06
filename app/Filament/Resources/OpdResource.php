@@ -58,12 +58,14 @@ class OpdResource extends Resource
             Textarea::make('alamat'),
 
             FileUpload::make('logo')
+                ->disk('s3')
                 ->label('Logo')
                 ->image()
                 ->directory('opd')
                 ->preserveFilenames(),
 
             FileUpload::make('foto_kantor')
+                ->disk('s3')
                 ->label('Foto Kantor')
                 ->image()
                 ->directory('opd')
@@ -87,6 +89,7 @@ class OpdResource extends Resource
         return $table
             ->columns([
                 ImageColumn::make('logo')
+                    ->disk('s3')
                     ->label('Logo')
                     ->width(40),
 

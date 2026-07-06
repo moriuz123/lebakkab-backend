@@ -13,24 +13,27 @@ class BeritaController extends Controller
 {
     use FiltersByOpd;
 
-    // 🔹 Semua berita (default 6 terbaru)
+    // 🔹 Semua berita (dengan pagination)
     public function index(Request $request)
     {
         $opd = $request->query('opd_id', $request->query('opd', 'all'));
-        $cacheKey = "berita.index.opd_{$opd}";
+        $page = $request->query('page', 1);
+        $cacheKey = "berita.index.opd_{$opd}.page_{$page}";
 
         $beritas = Cache::remember($cacheKey, 3600, function () use ($request) {
-            return $this->applyOpdFilter(Berita::with(['kategori', 'opd']), $request)
+            $paginator = $this->applyOpdFilter(Berita::with(['kategori', 'opd']), $request)
                 ->published()
                 ->orderBy('tanggal_publish', 'desc')
-                ->limit(10)
-                ->get()
-                ->map(function ($item) {
-                    $item->image = $item->thumbnail
-                        ? Storage::url($item->thumbnail)
-                        : asset('images/default-thumbnail.jpg');
-                    return $item;
-                });
+                ->paginate(12);
+                
+            $paginator->getCollection()->transform(function ($item) {
+                $item->image = $item->thumbnail
+                    ? Storage::url($item->thumbnail)
+                    : asset('images/default-thumbnail.jpg');
+                return $item;
+            });
+            
+            return $paginator;
         });
 
         return response()->json($beritas);
@@ -60,24 +63,28 @@ class BeritaController extends Controller
         return response()->json($berita);
     }
 
-    // 🔹 Filter berita berdasarkan kategori slug
+    // 🔹 Filter berita berdasarkan kategori slug (dengan pagination)
     public function byKategori(Request $request, $slug)
     {
         $opd = $request->query('opd_id', $request->query('opd', 'all'));
-        $cacheKey = "berita.kategori.{$slug}.opd_{$opd}";
+        $page = $request->query('page', 1);
+        $cacheKey = "berita.kategori.{$slug}.opd_{$opd}.page_{$page}";
 
         $beritas = Cache::remember($cacheKey, 3600, function () use ($request, $slug) {
-            return $this->applyOpdFilter(Berita::with(['kategori', 'opd']), $request)
+            $paginator = $this->applyOpdFilter(Berita::with(['kategori', 'opd']), $request)
                 ->byKategoriSlug($slug)
                 ->published()
                 ->orderBy('tanggal_publish', 'desc')
-                ->get()
-                ->map(function ($item) {
-                    $item->image = $item->thumbnail
-                        ? Storage::url($item->thumbnail)
-                        : asset('images/default-thumbnail.jpg');
-                    return $item;
-                });
+                ->paginate(12);
+                
+            $paginator->getCollection()->transform(function ($item) {
+                $item->image = $item->thumbnail
+                    ? Storage::url($item->thumbnail)
+                    : asset('images/default-thumbnail.jpg');
+                return $item;
+            });
+            
+            return $paginator;
         });
 
         return response()->json($beritas);
