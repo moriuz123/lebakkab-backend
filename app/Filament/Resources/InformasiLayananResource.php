@@ -62,6 +62,7 @@ class InformasiLayananResource extends Resource
                 ->columnSpanFull(),
 
             FileUpload::make('cover')
+                ->disk('s3')
                 ->label('Cover')
                 ->image()
                 ->required()
@@ -91,6 +92,7 @@ class InformasiLayananResource extends Resource
         return $table
             ->columns([
                 ImageColumn::make('cover')
+                    ->disk('s3')
                     ->label('Cover')
                     ->square(),
 

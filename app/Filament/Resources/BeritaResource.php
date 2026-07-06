@@ -82,6 +82,7 @@ class BeritaResource extends Resource
                 ->columnSpanFull(),
 
             FileUpload::make('thumbnail')
+                ->disk('s3')
                 ->label('Thumbnail')
                 ->image()
                 ->disk('s3')
@@ -106,6 +107,7 @@ class BeritaResource extends Resource
         return $table
             ->columns([
                 ImageColumn::make('thumbnail')
+                    ->disk('s3')
                     ->label('Gambar')
                     ->disk('s3')
                     ->height(60)

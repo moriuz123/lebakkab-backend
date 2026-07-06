@@ -71,6 +71,7 @@ class DokumenResource extends Resource
                     ->reactive(),
 
                 FileUpload::make('file_path')
+                ->disk('s3')
                     ->label('File PDF')
                     ->disk('s3')
                     ->directory('dokumens')

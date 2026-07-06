@@ -34,6 +34,7 @@ class KategoriFotoResource extends Resource
                     }),
 
                 Forms\Components\FileUpload::make('cover')
+                ->disk('s3')
                     ->label('Gambar Cover')
                     ->image()
                     ->imageEditor()
@@ -49,6 +50,7 @@ class KategoriFotoResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('cover')
+                    ->disk('s3')
                     ->label('Cover')
                     ->width(100)
                     ->height(60),

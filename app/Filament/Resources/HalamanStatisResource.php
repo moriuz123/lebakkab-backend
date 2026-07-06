@@ -43,6 +43,7 @@ class HalamanStatisResource extends Resource
 
 
             Forms\Components\FileUpload::make('cover')
+                ->disk('s3')
                 ->label('Cover')
                 ->directory('pages')
                 ->image()
@@ -72,6 +73,7 @@ class HalamanStatisResource extends Resource
                 ...\App\Filament\Support\OpdFields::tableColumns(),
 
                 Tables\Columns\ImageColumn::make('cover')
+                    ->disk('s3')
                     ->label('Cover')
                     ->height(50),
 

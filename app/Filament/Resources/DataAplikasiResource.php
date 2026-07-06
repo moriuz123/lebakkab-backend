@@ -67,6 +67,7 @@ class DataAplikasiResource extends Resource
                 }),
 
             FileUpload::make('icon')
+                ->disk('s3')
                 ->label('Upload Icon (.webp / .png)')
                 ->image()
                 ->imageEditor()
@@ -86,6 +87,7 @@ class DataAplikasiResource extends Resource
         return $table
             ->columns([
                 ImageColumn::make('icon')
+                    ->disk('s3')
                     ->label('Icon')
                     ->disk('s3')
                     ->height(40)

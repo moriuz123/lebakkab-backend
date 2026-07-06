@@ -22,8 +22,10 @@ class EditSetting extends EditRecord
         return [
             Forms\Components\TextInput::make('site_name')->label('Nama Website')->required(),
             Forms\Components\TextInput::make('site_description')->label('Deskripsi Website'),
-            Forms\Components\FileUpload::make('logo')->label('Logo')->directory('settings')->image(),
-            Forms\Components\FileUpload::make('favicon')->label('Favicon')->directory('settings')->acceptedFileTypes(['image/x-icon']),
+            Forms\Components\FileUpload::make('logo')
+                ->disk('s3')->label('Logo')->directory('settings')->image(),
+            Forms\Components\FileUpload::make('favicon')
+                ->disk('s3')->label('Favicon')->directory('settings')->acceptedFileTypes(['image/x-icon']),
             Forms\Components\TextInput::make('address')->label('Alamat'),
             Forms\Components\TextInput::make('email')->label('Email')->email(),
             Forms\Components\TextInput::make('phone')->label('Telepon'),
@@ -39,10 +41,13 @@ class EditSetting extends EditRecord
             Forms\Components\TextInput::make('google_analytics_id')->label('Google Analytics ID'),
             Forms\Components\Textarea::make('maps_embed')->label('Embed Peta'),
             Forms\Components\TextInput::make('maps_link')->label('Link Peta'),
-            Forms\Components\FileUpload::make('photo_bupati')->label('Foto Bupati')->directory('settings')->image(),
-            Forms\Components\FileUpload::make('photo_wakil_bupati')->label('Foto Wakil Bupati')->directory('settings')->image(),
+            Forms\Components\FileUpload::make('photo_bupati')
+                ->disk('s3')->label('Foto Bupati')->directory('settings')->image(),
+            Forms\Components\FileUpload::make('photo_wakil_bupati')
+                ->disk('s3')->label('Foto Wakil Bupati')->directory('settings')->image(),
             Forms\Components\TextInput::make('tagline'),
-            Forms\Components\FileUpload::make('logo_tagline')->label('Logo Tagline')->directory('settings')->image(),
+            Forms\Components\FileUpload::make('logo_tagline')
+                ->disk('s3')->label('Logo Tagline')->directory('settings')->image(),
             Forms\Components\TextInput::make('satuan_kerja')->label('Satuan Kerja'),
         ];
     }
