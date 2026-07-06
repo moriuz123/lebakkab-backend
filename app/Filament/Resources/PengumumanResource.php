@@ -70,7 +70,7 @@ class PengumumanResource extends Resource
             FileUpload::make('file_lampiran')
                 ->hint('(Bisa di Kosongkan Jika tidak ada.)')
                 ->label('File Lampiran')
-                ->disk('public')
+                ->disk('s3')
                 ->directory('pengumuman')
                 ->visibility('public'),
 

@@ -87,7 +87,7 @@ class DataAplikasiResource extends Resource
             ->columns([
                 ImageColumn::make('icon')
                     ->label('Icon')
-                    ->disk('public')
+                    ->disk('s3')
                     ->height(40)
                     ->width(40),
 

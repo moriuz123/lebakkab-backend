@@ -141,8 +141,8 @@ class InformasiLayananResource extends Resource
                     Tables\Actions\DeleteAction::make()
                         ->after(function ($record) {
                             // Hapus file cover dari storage jika ada
-                            if ($record->cover && Storage::disk('public')->exists($record->cover)) {
-                                Storage::disk('public')->delete($record->cover);
+                            if ($record->cover && Storage::disk('s3')->exists($record->cover)) {
+                                Storage::disk('s3')->delete($record->cover);
                             }
                         }),
                 ])
@@ -155,8 +155,8 @@ class InformasiLayananResource extends Resource
                     ->after(function ($records) {
                         // Hapus file cover untuk setiap record yang dihapus massal
                         foreach ($records as $record) {
-                            if ($record->cover && Storage::disk('public')->exists($record->cover)) {
-                                Storage::disk('public')->delete($record->cover);
+                            if ($record->cover && Storage::disk('s3')->exists($record->cover)) {
+                                Storage::disk('s3')->delete($record->cover);
                             }
                         }
                     }),

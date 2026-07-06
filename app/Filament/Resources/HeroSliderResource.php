@@ -103,8 +103,8 @@ class HeroSliderResource extends Resource
                     DeleteAction::make()
                         // ✅ Tambahan: hapus file gambar setelah delete
                         ->after(function ($record) {
-                            if ($record->gambar && Storage::disk('public')->exists($record->gambar)) {
-                                Storage::disk('public')->delete($record->gambar);
+                            if ($record->gambar && Storage::disk('s3')->exists($record->gambar)) {
+                                Storage::disk('s3')->delete($record->gambar);
                             }
                         }),
                 ])
