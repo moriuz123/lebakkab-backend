@@ -72,7 +72,7 @@ class DokumenResource extends Resource
 
                 FileUpload::make('file_path')
                     ->label('File PDF')
-                    ->disk('public')
+                    ->disk('s3')
                     ->directory('dokumens')
                     ->visibility('public')
                     ->acceptedFileTypes(['application/pdf'])

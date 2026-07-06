@@ -68,7 +68,7 @@ class BannerResource extends Resource
             ->columns([
                 ImageColumn::make('gambar')
                     ->label('Gambar')
-                    ->disk('public')
+                    ->disk('s3')
                     ->width(80)
                     ->height(60),
 

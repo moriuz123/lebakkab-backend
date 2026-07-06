@@ -84,7 +84,7 @@ class BeritaResource extends Resource
             FileUpload::make('thumbnail')
                 ->label('Thumbnail')
                 ->image()
-                ->disk('public')
+                ->disk('s3')
                 ->directory('berita/thumbnails')
                 ->required(),
 
@@ -107,7 +107,7 @@ class BeritaResource extends Resource
             ->columns([
                 ImageColumn::make('thumbnail')
                     ->label('Gambar')
-                    ->disk('public')
+                    ->disk('s3')
                     ->height(60)
                     ->width(80),
 
@@ -197,15 +197,15 @@ class BeritaResource extends Resource
                     EditAction::make(),
                     DeleteAction::make()
                         ->after(function ($record) {
-                            if ($record->thumbnail && Storage::disk('public')->exists($record->thumbnail)) {
-                                Storage::disk('public')->delete($record->thumbnail);
+                            if ($record->thumbnail && Storage::disk('s3')->exists($record->thumbnail)) {
+                                Storage::disk('s3')->delete($record->thumbnail);
                             }
                         }),
                     RestoreAction::make(),
                     ForceDeleteAction::make()
                         ->after(function ($record) {
-                            if ($record->thumbnail && Storage::disk('public')->exists($record->thumbnail)) {
-                                Storage::disk('public')->delete($record->thumbnail);
+                            if ($record->thumbnail && Storage::disk('s3')->exists($record->thumbnail)) {
+                                Storage::disk('s3')->delete($record->thumbnail);
                             }
                         }),
                 ])
