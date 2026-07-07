@@ -26,7 +26,7 @@ class DataAplikasiResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-window';
     protected static ?string $navigationLabel = 'Data Aplikasi';
-    protected static ?string $navigationGroup = 'Kelola Konten';
+    protected static ?string $navigationGroup = 'Data Master';
 
     public static function form(Form $form): Form
     {

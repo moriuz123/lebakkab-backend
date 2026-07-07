@@ -25,7 +25,7 @@ class OpdResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
     protected static ?string $navigationLabel = 'Data OPD';
     protected static ?string $slug = 'opd';
-    protected static ?string $navigationGroup = 'Kelola Konten';
+    protected static ?string $navigationGroup = 'Data Master';
 
 
 
