@@ -82,4 +82,9 @@ class KategoriLayananResource extends Resource
             'edit' => Pages\EditKategoriLayanan::route('/{record}/edit'),
         ];
     }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
 }
