@@ -157,8 +157,10 @@ class InformasiLayananResource extends Resource
                     ->label('Filter Unit Pelaksana')
                     ->options(
                         InformasiLayanan::query()
+                            ->whereNotNull('unit_pelaksana')
                             ->distinct()
                             ->pluck('unit_pelaksana', 'unit_pelaksana')
+                            ->toArray()
                     )
                     ->searchable(),
             ])
