@@ -21,11 +21,26 @@ trait FiltersByOpd
 
             return $query;
         }
-
-        if (is_numeric($opd)) {
-            return $query->where('opd_id', $opd);
-        }
-
-        return $query->whereHas('opd', fn (Builder $opdQuery) => $opdQuery->where('slug', $opd));
+        // Mendukung multiple OPD yang dipisah koma (contoh: 'diskominfo,utama')
+        $opds = explode(',', $opd);
+        
+        return $query->where(function ($q) use ($opds) {
+            foreach ($opds as $singleOpd) {
+                $singleOpd = trim($singleOpd);
+                
+                // Jika keyword 'utama', cari yang opd_id nya NULL (Berita Utama/Pemkab)
+                if ($singleOpd === 'utama' || $singleOpd === 'null') {
+                    $q->orWhereNull('opd_id');
+                } 
+                // Jika berupa ID angka
+                elseif (is_numeric($singleOpd)) {
+                    $q->orWhere('opd_id', $singleOpd);
+                } 
+                // Jika berupa slug
+                else {
+                    $q->orWhereHas('opd', fn (Builder $opdQuery) => $opdQuery->where('slug', $singleOpd));
+                }
+            }
+        });
     }
 }
