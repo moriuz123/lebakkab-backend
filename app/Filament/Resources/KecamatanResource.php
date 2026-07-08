@@ -22,7 +22,7 @@ class KecamatanResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-s-home-modern';
     protected static ?string $navigationLabel = 'Kecamatan';
-    protected static ?string $navigationGroup = 'Kelola Konten';
+    protected static ?string $navigationGroup = 'Data Master';
 
     public static function form(Form $form): Form
     {

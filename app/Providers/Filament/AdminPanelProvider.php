@@ -40,6 +40,11 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->path('admin')
             ->login()
+            ->navigationGroups([
+                'Data Master',
+                'Kelola Konten',
+                'Manajemen Situs',
+            ])
             ->colors([
                 'primary' => Color::Amber,
             ])

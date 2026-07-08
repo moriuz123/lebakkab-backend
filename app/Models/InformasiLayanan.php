@@ -12,6 +12,8 @@ class InformasiLayanan extends Model
 
     protected $fillable = [
         'judul',
+        'jenis',
+        'kategori_layanan_id',
         'opd_id',
         'tampil_di_portal',
         'deskripsi',
@@ -25,4 +27,9 @@ class InformasiLayanan extends Model
     protected $casts = [
         'tampil_di_portal' => 'boolean',
     ];
+
+    public function kategoriLayanan()
+    {
+        return $this->belongsTo(KategoriLayanan::class);
+    }
 }

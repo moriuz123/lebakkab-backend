@@ -4,7 +4,9 @@ namespace App\Filament\Resources\InformasiLayananResource\Pages;
 
 use App\Filament\Resources\InformasiLayananResource;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Actions\CreateAction; // <- Tambahkan ini
+use Filament\Actions\CreateAction;
+use Filament\Actions\Action;
+use App\Filament\Resources\KategoriLayananResource;
 
 class ListInformasiLayanans extends ListRecords
 {
@@ -13,6 +15,11 @@ class ListInformasiLayanans extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('kategori_layanan')
+                ->label('Kelola Kategori')
+                ->icon('heroicon-o-list-bullet')
+                ->color('primary')
+                ->url(KategoriLayananResource::getUrl('index')),
             CreateAction::make()
                 ->icon('heroicon-o-plus')
                 ->label('Tambah Layanan')

@@ -33,6 +33,20 @@ class InformasiLayananResource extends Resource
                 ->required()
                 ->maxLength(200),
 
+            Select::make('jenis')
+                ->label('Jenis Layanan')
+                ->options([
+                    'Layanan publik' => 'Layanan publik',
+                    'Layanan Internal Pemerintah' => 'Layanan Internal Pemerintah',
+                ])
+                ->searchable(),
+
+            Select::make('kategori_layanan_id')
+                ->label('Kategori Layanan')
+                ->relationship('kategoriLayanan', 'nama')
+                ->searchable()
+                ->preload(),
+
             // TextInput::make('slug')
             //     ->label('Slug')
             //     ->required()
@@ -75,6 +89,9 @@ class InformasiLayananResource extends Resource
 
             TextInput::make('unit_pelaksana')
                 ->label('Unit Pelaksana')
+                ->default(fn () => auth()->check() && auth()->user()->opd ? auth()->user()->opd->nama : null)
+                ->disabled(fn () => auth()->check() && !auth()->user()->hasRole('super_admin') && auth()->user()->opd_id)
+                ->dehydrated()
                 ->maxLength(255),
 
             Select::make('status')
@@ -98,6 +115,16 @@ class InformasiLayananResource extends Resource
 
                 TextColumn::make('judul')
                     ->label('Judul')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('jenis')
+                    ->label('Jenis')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('kategoriLayanan.nama')
+                    ->label('Kategori')
                     ->searchable()
                     ->sortable(),
 
@@ -130,8 +157,10 @@ class InformasiLayananResource extends Resource
                     ->label('Filter Unit Pelaksana')
                     ->options(
                         InformasiLayanan::query()
+                            ->whereNotNull('unit_pelaksana')
                             ->distinct()
                             ->pluck('unit_pelaksana', 'unit_pelaksana')
+                            ->toArray()
                     )
                     ->searchable(),
             ])
