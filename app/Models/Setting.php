@@ -11,4 +11,9 @@ class Setting extends Model
     protected $guarded = [];
 
     public $timestamps = false;
+
+    public function opd()
+    {
+        return $this->belongsTo(Opd::class);
+    }
 }

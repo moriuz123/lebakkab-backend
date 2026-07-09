@@ -28,9 +28,9 @@ class ManageSetting extends Page implements HasForms
 
     public function mount(): void
     {
-        $this->form->fill(
-            Setting::firstOrNew()->toArray()
-        );
+        $opdId = auth()->user()->opd_id;
+        $setting = Setting::firstOrNew(['opd_id' => $opdId]);
+        $this->form->fill($setting->toArray());
     }
 
     public function form(Form $form): Form
@@ -42,8 +42,8 @@ class ManageSetting extends Page implements HasForms
                     Tabs\Tab::make('Umum')->schema([
                         TextInput::make('site_name')->label('Nama Website')->required(),
                         TextInput::make('site_description')->label('Deskripsi Website'),
-                        FileUpload::make('logo')->label('Logo')->image()->directory('settings')->imagePreviewHeight('100'),
-                        FileUpload::make('favicon')->label('Favicon')->directory('settings')->acceptedFileTypes([
+                        FileUpload::make('logo')->label('Logo')->disk(config('filesystems.default'))->image()->directory('settings')->imagePreviewHeight('100'),
+                        FileUpload::make('favicon')->label('Favicon')->disk(config('filesystems.default'))->directory('settings')->acceptedFileTypes([
         'image/x-icon', 
         'image/vnd.microsoft.icon', // Seringkali file .ico dibaca sebagai ini oleh server
         'image/png', 
@@ -74,9 +74,9 @@ class ManageSetting extends Page implements HasForms
                     ]),
                     Tabs\Tab::make('Pejabat')->schema([
                         Grid::make(3)->schema([
-                            FileUpload::make('photo_bupati')->label('Foto Bupati')->directory('settings')->image(),
-                            FileUpload::make('logo_tagline')->label('Logo Tagline')->directory('settings')->image(),
-                            FileUpload::make('photo_wakil_bupati')->label('Foto Wakil Bupati')->directory('settings')->image(),
+                            FileUpload::make('photo_bupati')->label('Foto Bupati')->disk(config('filesystems.default'))->directory('settings')->image(),
+                            FileUpload::make('logo_tagline')->label('Logo Tagline')->disk(config('filesystems.default'))->directory('settings')->image(),
+                            FileUpload::make('photo_wakil_bupati')->label('Foto Wakil Bupati')->disk(config('filesystems.default'))->directory('settings')->image(),
                             TextInput::make('tagline')->label('Tagline'),
                             TextInput::make('satuan_kerja')->label('Satuan Kerja'),
 
@@ -95,8 +95,9 @@ class ManageSetting extends Page implements HasForms
 
     public function save(): void
     {
+        $opdId = auth()->user()->opd_id;
         Setting::updateOrCreate(
-            ['id' => Setting::first()?->id ?? 1],
+            ['opd_id' => $opdId],
             $this->form->getState()
         );
 

@@ -9,10 +9,13 @@ use Illuminate\Support\Facades\Cache;
 
 class SettingsController extends Controller
 {
-    public function headerData()
+    public function headerData(\Illuminate\Http\Request $request)
     {
-        $setting = Cache::remember('settings.header', 3600, function () {
-            return Setting::select(
+        $opdId = $request->query('opd_id');
+        $cacheKey = 'settings.header.' . ($opdId ?? 'global');
+
+        $setting = Cache::remember($cacheKey, 3600, function () use ($opdId) {
+            $query = Setting::select(
                 'site_name',
                 'tagline',
                 'satuan_kerja',
@@ -20,7 +23,10 @@ class SettingsController extends Controller
                 'logo_tagline',
                 'favicon',
                 'photo_bupati'
-            )->first();
+            );
+
+            $opdSetting = $opdId ? (clone $query)->where('opd_id', $opdId)->first() : null;
+            return $opdSetting ?? $query->whereNull('opd_id')->first();
         });
 
         return response()->json([
@@ -37,10 +43,13 @@ class SettingsController extends Controller
         ]);
     }
 
-    public function footerData()
+    public function footerData(\Illuminate\Http\Request $request)
     {
-        $setting = Cache::remember('settings.footer', 3600, function () {
-            return Setting::select(
+        $opdId = $request->query('opd_id');
+        $cacheKey = 'settings.footer.' . ($opdId ?? 'global');
+
+        $setting = Cache::remember($cacheKey, 3600, function () use ($opdId) {
+            $query = Setting::select(
                 'site_name',
                 'satuan_kerja',
                 'logo',
@@ -53,7 +62,10 @@ class SettingsController extends Controller
                 'youtube',
                 'whatsapp',
                 'footer_text'
-            )->first();
+            );
+
+            $opdSetting = $opdId ? (clone $query)->where('opd_id', $opdId)->first() : null;
+            return $opdSetting ?? $query->whereNull('opd_id')->first();
         });
 
         return response()->json([
