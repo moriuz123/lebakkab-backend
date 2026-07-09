@@ -47,4 +47,9 @@ class Opd extends Model
     {
         return $this->hasMany(InformasiLayanan::class);
     }
+
+    public function setting()
+    {
+        return $this->hasOne(Setting::class);
+    }
 }
