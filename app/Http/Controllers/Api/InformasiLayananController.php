@@ -18,7 +18,7 @@ class InformasiLayananController extends Controller
         $limit = $request->get('limit');
 
         // Query dasar
-        $query = $this->applyOpdFilter(InformasiLayanan::with('opd'), $request)
+        $query = $this->applyOpdFilter(InformasiLayanan::with(['opd', 'kategoriLayanan']), $request)
             ->orderBy('created_at', 'desc');
 
         // Jika ada limit, terapkan
@@ -26,25 +26,16 @@ class InformasiLayananController extends Controller
             $query->limit($limit);
         }
 
-        $layanan = $query->get()->map(function ($item) {
-            if ($item->cover) {
-                $item->cover = asset('storage/' . $item->cover);
-            }
-            return $item;
-        });
+        $layanan = $query->get();
 
         return response()->json($layanan);
     }
 
     public function show(Request $request, $slug)
     {
-        $layanan = $this->applyOpdFilter(InformasiLayanan::with('opd'), $request)
+        $layanan = $this->applyOpdFilter(InformasiLayanan::with(['opd', 'kategoriLayanan']), $request)
             ->where('slug', $slug)
             ->firstOrFail();
-
-        if ($layanan->cover) {
-            $layanan->cover = asset('storage/' . $layanan->cover);
-        }
 
         return response()->json($layanan);
     }
