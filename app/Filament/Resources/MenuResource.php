@@ -31,7 +31,8 @@ class MenuResource extends Resource
                         ->options([
                             'main' => 'Main Menu',
                             'front' => 'Front Menu',
-                            'footer' => 'Footer Menu',
+                            'footer_widget_1' => 'Footer Widget 1',
+                            'footer_widget_2' => 'Footer Widget 2',
                         ])
                         ->required(),
 
@@ -151,7 +152,8 @@ class MenuResource extends Resource
                     ->options([
                         'main' => 'Main Menu',
                         'front' => 'Front Menu',
-                        'footer' => 'Footer Menu',
+                        'footer_widget_1' => 'Footer Widget 1',
+                        'footer_widget_2' => 'Footer Widget 2',
                     ]),
 
                 // 🔹 Filter berdasarkan parent
