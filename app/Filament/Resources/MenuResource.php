@@ -29,42 +29,63 @@ class MenuResource extends Resource
 
                     Forms\Components\Select::make('menu_type')
                         ->options([
-                            'main' => 'Main Menu',
-                            'front' => 'Front Menu',
-                            'footer_widget_1' => 'Footer Widget 1',
-                            'footer_widget_2' => 'Footer Widget 2',
+                            Menu::TYPE_MAIN => 'Menu Utama',
+                            Menu::TYPE_FRONT => 'Hero Menu',
+                            Menu::TYPE_FOOTER_1 => 'Footer Widget 1',
+                            Menu::TYPE_FOOTER_2 => 'Footer Widget 2',
                         ])
                         ->required(),
 
                     Forms\Components\Select::make('parent_id')
-                        ->label('Parent Menu')
-                        ->options(\App\Filament\Support\OpdFields::applyOpdScope(Menu::query())->pluck('title', 'id'))
+                        ->label('Menu Induk')
+                        ->options(function (?Menu $record) {
+                            $query = \App\Filament\Support\OpdFields::applyOpdScope(Menu::query());
+                            if ($record) {
+                                $query->where('id', '!=', $record->id);
+                            }
+                            return $query->pluck('title', 'id');
+                        })
                         ->searchable()
-                        ->nullable(),
+                        ->nullable()
+                        ->helperText('Kosongkan jika ini adalah Menu Utama. Jika dipilih, menu ini akan menjadi Sub-menu di bawahnya.')
+                        ->rules([
+                            fn (Forms\Get $get, ?Menu $record) => function (string $attribute, $value, \Closure $fail) use ($record) {
+                                if ($value) {
+                                    $parent = Menu::find($value);
+                                    if ($parent && $parent->parent_id) {
+                                        $fail('Struktur maksimal 2 level. Parent yang Anda pilih sudah merupakan sebuah Sub-menu.');
+                                    }
+                                    if ($record && $record->children()->exists()) {
+                                        $fail('Menu ini sudah memiliki sub-menu di bawahnya. Anda tidak bisa memindahkannya menjadi sub-menu dari menu lain.');
+                                    }
+                                }
+                            },
+                        ]),
 
                     Forms\Components\Select::make('link_type')
                         ->label('Tipe Link')
                         ->options([
-                            'home' => 'Beranda',
-                            'halaman_statis' => 'Halaman Statis',
-                            'kategori_berita' => 'Kategori Berita',
-                            'kategori_dokumen' => 'Kategori Dokumen', // 🔹 tambahkan ini
-                            'modul' => 'Modul',
-                            'eksternal' => 'Eksternal',
-                            'parent' => 'Menu Induk (tanpa link)',
+                            Menu::LINK_HOME => 'Beranda',
+                            Menu::LINK_HALAMAN_STATIS => 'Halaman Statis',
+                            Menu::LINK_KATEGORI_BERITA => 'Kategori Berita',
+                            Menu::LINK_KATEGORI_DOKUMEN => 'Kategori Dokumen',
+                            Menu::LINK_MODUL => 'Modul',
+                            Menu::LINK_EKSTERNAL => 'Eksternal',
+                            Menu::LINK_PARENT => 'Menu Induk (tanpa link)',
                         ])
                         ->reactive()
-                        ->nullable(),
+                        ->nullable()
+                        ->helperText('Pilih "Menu Induk (tanpa link)" jika menu ini hanya berfungsi sebagai wadah dropdown (teks tidak bisa diklik).'),
 
                     Forms\Components\Select::make('link_ref')
                         ->label('Referensi Link')
                         ->options(function (callable $get) {
                             switch ($get('link_type')) {
-                                case 'halaman_statis':
+                                case Menu::LINK_HALAMAN_STATIS:
                                     return \App\Filament\Support\OpdFields::applyOpdScope(\App\Models\HalamanStatis::query())->pluck('judul', 'id');
-                                case 'kategori_berita':
+                                case Menu::LINK_KATEGORI_BERITA:
                                     return \App\Models\Kategori::pluck('nama', 'slug');
-                                case 'modul':
+                                case Menu::LINK_MODUL:
                                     return collect([
                                         'aplikasi' => 'Data Aplikasi',
                                         'kategori_fotos' => 'Kategori Foto',
@@ -77,19 +98,19 @@ class MenuResource extends Resource
                                         'berita' => 'Semua Berita',
                                         'kecamatan' => 'Data Kecamatan',
                                     ]);
-                                case 'kategori_dokumen': // 🔹 ambil langsung dari tabel kategori_dokumens
+                                case Menu::LINK_KATEGORI_DOKUMEN: // 🔹 ambil langsung dari tabel kategori_dokumens
                                     return \App\Models\KategoriDokumen::pluck('nama', 'slug');
                                 default:
                                     return [];
                             }
                         })
                         ->nullable()
-                        ->hidden(fn($get) => in_array($get('link_type'), ['eksternal', 'parent', null])),
+                        ->hidden(fn($get) => in_array($get('link_type'), [Menu::LINK_EKSTERNAL, Menu::LINK_PARENT, null])),
 
 
 
                     Forms\Components\TextInput::make('icon')
-                        ->label('Icon Class')
+                        ->label('Class Icon')
                         ->placeholder('contoh: heroicon-o-home atau lucide-user')
                         ->hintAction(
                             Forms\Components\Actions\Action::make('lihatIcon')
@@ -103,7 +124,7 @@ class MenuResource extends Resource
                     Forms\Components\TextInput::make('url')
                         ->label('URL Eksternal')
                         ->url()
-                        ->hidden(fn($get) => $get('link_type') !== 'eksternal'),
+                        ->hidden(fn($get) => $get('link_type') !== Menu::LINK_EKSTERNAL),
 
                     Forms\Components\TextInput::make('sort_order')
                         ->numeric()
@@ -125,8 +146,34 @@ class MenuResource extends Resource
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('title')
+                    ->label('Judul Menu')
+                    ->searchable()
                     ->sortable()
-                    ->searchable(),
+                    ->weight(fn (Menu $record) => $record->parent_id ? 'regular' : 'bold')
+                    ->color(fn (Menu $record) => $record->parent_id ? 'gray' : 'primary')
+                    ->description(function (Menu $record): string {
+                        // Ambil nama Tipe Menu
+                        $typeLabel = match($record->menu_type) {
+                            Menu::TYPE_MAIN => 'Menu Utama',
+                            Menu::TYPE_FRONT => 'Hero Menu',
+                            Menu::TYPE_FOOTER_1 => 'Footer Widget 1',
+                            Menu::TYPE_FOOTER_2 => 'Footer Widget 2',
+                            default => $record->menu_type,
+                        };
+
+                        // 1 Bintang: Menu Induk (tanpa parent)
+                        if (is_null($record->parent_id)) {
+                            return "⭐ {$typeLabel} - Menu Induk";
+                        }
+                        
+                        // 2 Bintang: Sub Menu (parent-nya adalah Menu Induk)
+                        if ($record->parent && is_null($record->parent->parent_id)) {
+                            return "⭐⭐ {$typeLabel} - Sub Menu dari: " . $record->parent->title;
+                        }
+
+                        // 3 Bintang: Sub Sub Menu (parent-nya memiliki parent lagi)
+                        return "⭐⭐⭐ {$typeLabel} - Sub Sub Menu dari: " . optional($record->parent)->title;
+                    }),
 
                 Tables\Columns\TextColumn::make('menu_type')
                     ->badge(),
@@ -135,7 +182,8 @@ class MenuResource extends Resource
                     ->badge(),
 
                 Tables\Columns\TextColumn::make('parent.title')
-                    ->label('Parent'),
+                    ->label('Menu Induk')
+                    ->toggleable(isToggledHiddenByDefault: true), // 🔹 Disembunyikan karena sudah ada di deskripsi title
 
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean(),
@@ -145,20 +193,21 @@ class MenuResource extends Resource
                 ...\App\Filament\Support\OpdFields::tableColumns(),
             ])
             ->defaultSort('sort_order', 'asc')
+            ->reorderable('sort_order')
             ->filters([
                 // 🔹 Filter berdasarkan tipe menu
                 Tables\Filters\SelectFilter::make('menu_type')
                     ->label('Tipe Menu')
                     ->options([
-                        'main' => 'Main Menu',
-                        'front' => 'Front Menu',
-                        'footer_widget_1' => 'Footer Widget 1',
-                        'footer_widget_2' => 'Footer Widget 2',
+                        Menu::TYPE_MAIN => 'Menu Utama',
+                        Menu::TYPE_FRONT => 'Hero Menu',
+                        Menu::TYPE_FOOTER_1 => 'Footer Widget 1',
+                        Menu::TYPE_FOOTER_2 => 'Footer Widget 2',
                     ]),
 
                 // 🔹 Filter berdasarkan parent
                 Tables\Filters\SelectFilter::make('parent_id')
-                    ->label('Parent Menu')
+                    ->label('Menu Induk')
                     ->options(\App\Filament\Support\OpdFields::applyOpdScope(Menu::whereNull('parent_id'))->pluck('title', 'id'))
                     ->placeholder('Semua'),
 
@@ -172,7 +221,24 @@ class MenuResource extends Resource
                         true: fn($query) => $query->whereNull('parent_id'),
                         false: fn($query) => $query->whereNotNull('parent_id'),
                     ),
-                ...\App\Filament\Support\OpdFields::filters(),
+
+                // 🔹 Filter OPD Kustom (Menggantikan OpdFields::filters())
+                Tables\Filters\SelectFilter::make('opd_id')
+                    ->label('Filter Data OPD')
+                    ->options(fn () => \App\Models\Opd::pluck('nama', 'id')->toArray())
+                    ->searchable()
+                    ->query(function (\Illuminate\Database\Eloquent\Builder $query, array $data) {
+                        if (auth()->check() && auth()->user()->hasRole('super_admin')) {
+                            if (!empty($data['value'])) {
+                                // Jika filter OPD dipilih, tampilkan menu milik OPD tersebut
+                                $query->where('opd_id', $data['value']);
+                            } else {
+                                // Default Super Admin: Hanya tampilkan menu Web Utama (opd_id = null)
+                                $query->whereNull('opd_id');
+                            }
+                        }
+                    })
+                    ->hidden(fn () => auth()->check() && !auth()->user()->hasRole('super_admin') && auth()->user()->opd_id),
             ])
 
             // test
