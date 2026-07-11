@@ -44,7 +44,7 @@ class MenuController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'data' => MenuApiResource::collection($menus),
+            'data' => $menus,
         ]);
     }
 }
