@@ -176,7 +176,14 @@ class MenuResource extends Resource
                     }),
 
                 Tables\Columns\TextColumn::make('menu_type')
-                    ->badge(),
+                    ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        Menu::TYPE_MAIN => 'Menu Utama',
+                        Menu::TYPE_FRONT => 'Hero Menu',
+                        Menu::TYPE_FOOTER_1 => 'Footer Widget 1',
+                        Menu::TYPE_FOOTER_2 => 'Footer Widget 2',
+                        default => $state,
+                    }),
 
                 Tables\Columns\TextColumn::make('link_type')
                     ->badge(),
