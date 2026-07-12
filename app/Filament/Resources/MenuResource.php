@@ -70,6 +70,7 @@ class MenuResource extends Resource
                             Menu::LINK_KATEGORI_BERITA => 'Kategori Berita',
                             Menu::LINK_KATEGORI_DOKUMEN => 'Kategori Dokumen',
                             Menu::LINK_MODUL => 'Modul',
+                            Menu::LINK_PEJABAT => 'Detail Pejabat',
                             Menu::LINK_EKSTERNAL => 'Eksternal',
                             Menu::LINK_PARENT => 'Menu Induk (tanpa link)',
                         ])
@@ -102,6 +103,8 @@ class MenuResource extends Resource
                                     ]);
                                 case Menu::LINK_KATEGORI_DOKUMEN: // 🔹 ambil langsung dari tabel kategori_dokumens
                                     return \App\Models\KategoriDokumen::pluck('nama', 'slug');
+                                case Menu::LINK_PEJABAT:
+                                    return \App\Filament\Support\OpdFields::applyOpdScope(\App\Models\Pejabat::query())->pluck('nama', 'id');
                                 default:
                                     return [];
                             }

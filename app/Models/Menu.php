@@ -20,6 +20,7 @@ class Menu extends Model
     public const LINK_MODUL = 'modul';
     public const LINK_EKSTERNAL = 'eksternal';
     public const LINK_PARENT = 'parent';
+    public const LINK_PEJABAT = 'pejabat';
 
     protected $fillable = [
         'icon', // ✅ tambahkan
@@ -100,6 +101,8 @@ class Menu extends Model
                 return '/dokumen/kategori/' . $this->link_ref;
             case self::LINK_MODUL:
                 return '/' . ltrim($this->link_ref, '/');
+            case self::LINK_PEJABAT:
+                return '/pejabat/' . $this->link_ref;
             case self::LINK_EKSTERNAL:
                 return $this->attributes['url'] ?? null;
             case self::LINK_PARENT:
