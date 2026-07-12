@@ -87,6 +87,8 @@ class MenuResource extends Resource
                                     return \App\Models\Kategori::pluck('nama', 'slug');
                                 case Menu::LINK_MODUL:
                                     return collect([
+                                        'profil-daerah' => 'Profil Kabupaten',
+                                        'pejabat' => 'Data Pejabat',
                                         'aplikasi' => 'Data Aplikasi',
                                         'kategori_fotos' => 'Kategori Foto',
                                         'kategori_vidios' => 'Kategori Video',
