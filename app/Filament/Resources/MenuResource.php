@@ -82,7 +82,7 @@ class MenuResource extends Resource
                         ->options(function (callable $get) {
                             switch ($get('link_type')) {
                                 case Menu::LINK_HALAMAN_STATIS:
-                                    return \App\Filament\Support\OpdFields::applyOpdScope(\App\Models\HalamanStatis::query())->pluck('judul', 'id');
+                                    return \App\Filament\Support\OpdFields::applyOpdScope(\App\Models\HalamanStatis::query())->pluck('judul', 'slug');
                                 case Menu::LINK_KATEGORI_BERITA:
                                     return \App\Models\Kategori::pluck('nama', 'slug');
                                 case Menu::LINK_MODUL:
