@@ -95,9 +95,15 @@ Route::get('/agendas/{id}', [AgendaController::class, 'show']);
 
 // data menu
 Route::get('/menus/{type}', [MenuController::class, 'index']);
+use App\Http\Controllers\Api\PejabatController;
+
 // Modul Settings
 Route::get('/settings/header', [SettingsController::class, 'headerData']);
 Route::get('/settings/footer', [SettingsController::class, 'footerData']);
+
+// Modul Pejabat
+Route::get('/pejabat', [PejabatController::class, 'index']);
+Route::get('/pejabat/{id}', [PejabatController::class, 'show']);
 
 // Modul pencarian
 Route::get('/search', [SearchController::class, 'search']);
