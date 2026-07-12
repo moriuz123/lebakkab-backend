@@ -41,14 +41,16 @@ class EditSetting extends EditRecord
             Forms\Components\TextInput::make('google_analytics_id')->label('Google Analytics ID'),
             Forms\Components\Textarea::make('maps_embed')->label('Embed Peta'),
             Forms\Components\TextInput::make('maps_link')->label('Link Peta'),
-            Forms\Components\FileUpload::make('photo_bupati')
-                ->disk('s3')->label('Foto Bupati')->directory('settings')->image(),
-            Forms\Components\FileUpload::make('photo_wakil_bupati')
-                ->disk('s3')->label('Foto Wakil Bupati')->directory('settings')->image(),
             Forms\Components\TextInput::make('tagline'),
             Forms\Components\FileUpload::make('logo_tagline')
                 ->disk('s3')->label('Logo Tagline')->directory('settings')->image(),
             Forms\Components\TextInput::make('satuan_kerja')->label('Satuan Kerja'),
+            Forms\Components\FileUpload::make('logo_hero')
+                ->disk('s3')->label('Logo Hero')->directory('settings')->image(),
+            Forms\Components\FileUpload::make('logo_tagline2')
+                ->disk('s3')->label('Logo Tagline 2')->directory('settings')->image(),
+            Forms\Components\FileUpload::make('logo_tagline3')
+                ->disk('s3')->label('Logo Tagline 3')->directory('settings')->image(),
         ];
     }
 }
