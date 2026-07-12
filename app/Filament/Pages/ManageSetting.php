@@ -40,21 +40,23 @@ class ManageSetting extends Page implements HasForms
             ->schema([
                 Tabs::make('Pengaturan')->tabs([
                     Tabs\Tab::make('Umum')->schema([
-                        TextInput::make('site_name')->label('Nama Website')->required(),
-                        TextInput::make('site_description')->label('Deskripsi Website'),
-                        FileUpload::make('logo')->label('Logo')->disk(config('filesystems.default'))->image()->directory('settings')->imagePreviewHeight('100'),
-                        FileUpload::make('favicon')->label('Favicon')->disk(config('filesystems.default'))->directory('settings')->acceptedFileTypes([
-                            'image/x-icon', 
-                            'image/vnd.microsoft.icon', // Seringkali file .ico dibaca sebagai ini oleh server
-                            'image/png', 
-                            'image/jpeg'
-                        ]),
-                        TextInput::make('tagline')->label('Tagline'),
-                        TextInput::make('satuan_kerja')->label('Satuan Kerja'),
-                        FileUpload::make('logo_tagline')->label('Logo Tagline')->disk(config('filesystems.default'))->directory('settings')->image(),
-                        FileUpload::make('logo_tagline2')->label('Logo Tagline 2')->disk('s3')->directory('settings')->image(),
-                        FileUpload::make('logo_tagline3')->label('Logo Tagline 3')->disk('s3')->directory('settings')->image(),
-                        FileUpload::make('logo_hero')->label('Logo Hero')->disk('s3')->directory('settings')->image(),
+                        Grid::make(2)->schema([
+                            TextInput::make('site_name')->label('Nama Website')->required(),
+                            TextInput::make('site_description')->label('Deskripsi Website'),
+                            FileUpload::make('logo')->label('Logo')->disk(config('filesystems.default'))->image()->directory('settings')->imagePreviewHeight('100'),
+                            FileUpload::make('favicon')->label('Favicon')->disk(config('filesystems.default'))->directory('settings')->acceptedFileTypes([
+                                'image/x-icon', 
+                                'image/vnd.microsoft.icon', // Seringkali file .ico dibaca sebagai ini oleh server
+                                'image/png', 
+                                'image/jpeg'
+                            ]),
+                            TextInput::make('tagline')->label('Tagline'),
+                            TextInput::make('satuan_kerja')->label('Satuan Kerja'),
+                            FileUpload::make('logo_tagline')->label('Logo Tagline')->disk(config('filesystems.default'))->directory('settings')->image(),
+                            FileUpload::make('logo_tagline2')->label('Logo Tagline 2')->disk('s3')->directory('settings')->image(),
+                            FileUpload::make('logo_tagline3')->label('Logo Tagline 3')->disk('s3')->directory('settings')->image(),
+                            FileUpload::make('logo_hero')->label('Logo Hero')->disk('s3')->directory('settings')->image(),
+                        ])
                     ]),
                     Tabs\Tab::make('Kontak')->schema([
                         TextInput::make('address')->label('Alamat'),
