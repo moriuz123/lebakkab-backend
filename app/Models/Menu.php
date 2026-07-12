@@ -100,9 +100,16 @@ class Menu extends Model
             case self::LINK_KATEGORI_DOKUMEN: // 🔹 kategori dokumen by slug
                 return '/dokumen/kategori/' . $this->link_ref;
             case self::LINK_MODUL:
+                // Menyesuaikan dengan route frontend (Vue router)
+                if ($this->link_ref === 'profil-daerah') {
+                    return '/profil-kabupaten';
+                }
+                if ($this->link_ref === 'pejabat') {
+                    return '/profil-pejabat';
+                }
                 return '/' . ltrim($this->link_ref, '/');
             case self::LINK_PEJABAT:
-                return '/pejabat/' . $this->link_ref;
+                return '/profil-pejabat/' . $this->link_ref;
             case self::LINK_EKSTERNAL:
                 return $this->attributes['url'] ?? null;
             case self::LINK_PARENT:
