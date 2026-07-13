@@ -88,10 +88,30 @@ class InformasiLayananResource extends Resource
                 ->maxLength(255),
 
             Select::make('link_rujukan')
-                ->label('Link Rujukan (Pilih Aplikasi)')
+                ->label('Link Rujukan (Pilih Aplikasi / Website OPD)')
                 ->options(function () {
-                    return \App\Filament\Support\OpdFields::applyOpdScope(\App\Models\DataAplikasi::query())
-                        ->pluck('nama', 'link');
+                    // Ambil opsi aplikasi berdasarkan OPD (atau semua jika superadmin)
+                    $aplikasi = \App\Filament\Support\OpdFields::applyOpdScope(\App\Models\DataAplikasi::query())
+                        ->whereNotNull('link')
+                        ->where('link', '!=', '')
+                        ->pluck('nama', 'link')
+                        ->toArray();
+
+                    // Ambil opsi website OPD
+                    $opdQuery = \App\Models\Opd::query()
+                        ->whereNotNull('website')
+                        ->where('website', '!=', '');
+                        
+                    if (auth()->check() && auth()->user()->opd_id) {
+                        $opdQuery->where('id', auth()->user()->opd_id);
+                    }
+                    
+                    $opd = $opdQuery->pluck('nama', 'website')->toArray();
+
+                    return [
+                        'Data Aplikasi' => $aplikasi,
+                        'Website OPD' => $opd,
+                    ];
                 })
                 ->searchable(),
 
