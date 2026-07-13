@@ -16,10 +16,6 @@ class KategoriLayanan extends Model
         'slug',
         'thumbnail',
     ];
-        'slug',
-        'thumbnail',
-    ];
-
     public function informasiLayanans()
     {
         return $this->hasMany(InformasiLayanan::class);
