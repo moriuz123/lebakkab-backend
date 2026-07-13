@@ -87,10 +87,13 @@ class InformasiLayananResource extends Resource
                 ->label('Kontak')
                 ->maxLength(255),
 
-            TextInput::make('link_rujukan')
-                ->label('Link Rujukan (Website)')
-                ->url()
-                ->maxLength(255),
+            Select::make('link_rujukan')
+                ->label('Link Rujukan (Pilih Aplikasi)')
+                ->options(function () {
+                    return \App\Filament\Support\OpdFields::applyOpdScope(\App\Models\DataAplikasi::query())
+                        ->pluck('nama', 'link');
+                })
+                ->searchable(),
 
             Select::make('status')
                 ->label('Status')
