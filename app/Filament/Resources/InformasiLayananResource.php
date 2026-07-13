@@ -87,11 +87,9 @@ class InformasiLayananResource extends Resource
                 ->label('Kontak')
                 ->maxLength(255),
 
-            TextInput::make('unit_pelaksana')
-                ->label('Unit Pelaksana')
-                ->default(fn () => auth()->check() && auth()->user()->opd ? auth()->user()->opd->nama : null)
-                ->disabled(fn () => auth()->check() && !auth()->user()->hasRole('super_admin') && auth()->user()->opd_id)
-                ->dehydrated()
+            TextInput::make('link_rujukan')
+                ->label('Link Rujukan (Website)')
+                ->url()
                 ->maxLength(255),
 
             Select::make('status')
@@ -132,9 +130,6 @@ class InformasiLayananResource extends Resource
                     ->label('Slug')
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('unit_pelaksana')
-                    ->label('Unit'),
-
                 ...\App\Filament\Support\OpdFields::tableColumns(),
 
                 TextColumn::make('kontak')
@@ -153,16 +148,11 @@ class InformasiLayananResource extends Resource
             ->filters([
                 ...\App\Filament\Support\OpdFields::filters(),
 
-                SelectFilter::make('unit_pelaksana')
-                    ->label('Filter Unit Pelaksana')
-                    ->options(
-                        InformasiLayanan::query()
-                            ->whereNotNull('unit_pelaksana')
-                            ->distinct()
-                            ->pluck('unit_pelaksana', 'unit_pelaksana')
-                            ->toArray()
-                    )
-                    ->searchable(),
+                SelectFilter::make('kategori_layanan_id')
+                    ->label('Kategori Layanan')
+                    ->relationship('kategoriLayanan', 'nama')
+                    ->searchable()
+                    ->preload(),
             ])
             ->defaultSort('created_at', 'desc')
             ->actions([

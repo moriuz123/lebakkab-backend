@@ -14,6 +14,10 @@ class KategoriLayanan extends Model
     protected $fillable = [
         'nama',
         'slug',
+        'thumbnail',
+    ];
+        'slug',
+        'thumbnail',
     ];
 
     public function informasiLayanans()

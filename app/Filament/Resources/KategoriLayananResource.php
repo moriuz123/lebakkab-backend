@@ -11,6 +11,9 @@ use Filament\Tables\Table;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Set;
 use Illuminate\Support\Str;
+use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Columns\ImageColumn;
+use Illuminate\Support\Facades\Storage;
 
 class KategoriLayananResource extends Resource
 {
@@ -37,6 +40,12 @@ class KategoriLayananResource extends Resource
                     ->required()
                     ->unique(ignoreRecord: true)
                     ->maxLength(255),
+                FileUpload::make('thumbnail')
+                    ->disk('s3')
+                    ->label('Thumbnail')
+                    ->image()
+                    ->directory('kategori-layanan')
+                    ->visibility('public'),
             ]);
     }
 
@@ -47,6 +56,10 @@ class KategoriLayananResource extends Resource
                 Tables\Columns\TextColumn::make('nama')
                     ->label('Nama Kategori')
                     ->searchable(),
+                ImageColumn::make('thumbnail')
+                    ->disk('s3')
+                    ->label('Thumbnail')
+                    ->square(),
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -65,11 +78,23 @@ class KategoriLayananResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->after(function ($record) {
+                        if ($record->thumbnail && Storage::disk('s3')->exists($record->thumbnail)) {
+                            Storage::disk('s3')->delete($record->thumbnail);
+                        }
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->after(function ($records) {
+                            foreach ($records as $record) {
+                                if ($record->thumbnail && Storage::disk('s3')->exists($record->thumbnail)) {
+                                    Storage::disk('s3')->delete($record->thumbnail);
+                                }
+                            }
+                        }),
                 ]),
             ]);
     }

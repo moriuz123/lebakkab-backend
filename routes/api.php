@@ -85,8 +85,10 @@ Route::get('/kecamatan', [KecamatanController::class, 'index']);
 Route::get('/kecamatan/{slug}', [KecamatanController::class, 'show']);
 
 // data informasi layanan
+Route::get('/kategori-layanan', [\App\Http\Controllers\Api\KategoriLayananController::class, 'index']);
+Route::get('/layanan/kategori/{slug}', [InformasiLayananController::class, 'byKategori']);
 Route::get('/layanan', [InformasiLayananController::class, 'index']);
-Route::get('/layanan/{id}', [InformasiLayananController::class, 'show']);
+Route::get('/layanan/{slug}', [InformasiLayananController::class, 'show']);
 
 //data agenda
 Route::get('/agendas', [AgendaController::class, 'index']);
