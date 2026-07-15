@@ -43,7 +43,7 @@ class TteController extends Controller
         }
 
         try {
-            $path = $request->file('surat_rekomendasi')->store('tte/rekomendasi', 'public');
+            $path = $request->file('surat_rekomendasi')->store('tte/rekomendasi', 's3');
 
             $registration = TteRegistration::create([
                 'opd_id' => $request->opd_id,

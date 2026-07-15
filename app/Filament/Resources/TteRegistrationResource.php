@@ -61,6 +61,7 @@ class TteRegistrationResource extends Resource
                         ->required(),
                     Forms\Components\FileUpload::make('surat_rekomendasi')
                         ->label('Surat Rekomendasi (PDF)')
+                        ->disk('s3')
                         ->acceptedFileTypes(['application/pdf'])
                         ->directory('tte/rekomendasi')
                         ->required(),

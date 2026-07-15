@@ -51,6 +51,7 @@ class TteInfoResource extends Resource
                         ->columnSpanFull(),
                     Forms\Components\FileUpload::make('gambar')
                         ->label('Gambar / Ilustrasi')
+                        ->disk('s3')
                         ->image()
                         ->directory('tte/info'),
                     Forms\Components\TextInput::make('urutan')
