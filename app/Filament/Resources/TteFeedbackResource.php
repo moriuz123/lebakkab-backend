@@ -44,7 +44,27 @@ class TteFeedbackResource extends Resource
                         ->label('Instansi / OPD')
                         ->maxLength(255),
                     Forms\Components\TextInput::make('rating')
-                        ->label('Rating (1-5)')
+                        ->label('Rating Umum (Lama)')
+                        ->numeric()
+                        ->minValue(1)
+                        ->maxValue(5),
+                    Forms\Components\TextInput::make('rating_kemudahan')
+                        ->label('Kemudahan Penggunaan (1-5)')
+                        ->numeric()
+                        ->minValue(1)
+                        ->maxValue(5),
+                    Forms\Components\TextInput::make('rating_kecepatan')
+                        ->label('Kecepatan Proses (1-5)')
+                        ->numeric()
+                        ->minValue(1)
+                        ->maxValue(5),
+                    Forms\Components\TextInput::make('rating_kejelasan')
+                        ->label('Kejelasan Informasi (1-5)')
+                        ->numeric()
+                        ->minValue(1)
+                        ->maxValue(5),
+                    Forms\Components\TextInput::make('rating_pelayanan')
+                        ->label('Kualitas Bantuan (1-5)')
                         ->numeric()
                         ->minValue(1)
                         ->maxValue(5),
@@ -71,8 +91,22 @@ class TteFeedbackResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('instansi')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('rating')
-                    ->label('Rating'),
+                Tables\Columns\TextColumn::make('rating_kemudahan')
+                    ->label('Kemudahan')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('rating_kecepatan')
+                    ->label('Kecepatan')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('rating_kejelasan')
+                    ->label('Kejelasan')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('rating_pelayanan')
+                    ->label('Pelayanan')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\IconColumn::make('is_read')
                     ->boolean()
                     ->label('Dibaca'),

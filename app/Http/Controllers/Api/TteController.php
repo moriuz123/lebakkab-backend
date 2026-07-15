@@ -86,7 +86,10 @@ class TteController extends Controller
             'email' => 'required|email|max:255',
             'instansi' => 'required|string|max:255',
             'pesan' => 'required|string',
-            'rating' => 'nullable|integer|min:1|max:5',
+            'rating_kemudahan' => 'nullable|integer|min:1|max:5',
+            'rating_kecepatan' => 'nullable|integer|min:1|max:5',
+            'rating_kejelasan' => 'nullable|integer|min:1|max:5',
+            'rating_pelayanan' => 'nullable|integer|min:1|max:5',
         ]);
 
         if ($validator->fails()) {
@@ -98,7 +101,10 @@ class TteController extends Controller
         }
 
         try {
-            $feedback = TteFeedback::create($request->only(['nama', 'email', 'instansi', 'pesan', 'rating']));
+            $feedback = TteFeedback::create($request->only([
+                'nama', 'email', 'instansi', 'pesan', 
+                'rating_kemudahan', 'rating_kecepatan', 'rating_kejelasan', 'rating_pelayanan'
+            ]));
 
             return response()->json([
                 'success' => true,
