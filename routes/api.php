@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\MenuController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\PollingController;
 use App\Http\Controllers\Api\KritikSaranController;
+use App\Http\Controllers\Api\TteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -118,3 +119,8 @@ Route::get('/search', [SearchController::class, 'search']);
 
 Route::get('/polling', [PollingController::class, 'index']);
 Route::post('/polling/vote', [PollingController::class, 'vote']);
+
+// Modul SPON TTE
+Route::get('/spon-tte/info', [TteController::class, 'getInfo']);
+Route::post('/spon-tte/register', [TteController::class, 'register']);
+Route::post('/spon-tte/feedback', [TteController::class, 'feedback']);
