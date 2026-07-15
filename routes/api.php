@@ -124,3 +124,4 @@ Route::post('/polling/vote', [PollingController::class, 'vote']);
 Route::get('/spon-tte/info', [TteController::class, 'getInfo']);
 Route::post('/spon-tte/register', [TteController::class, 'register']);
 Route::post('/spon-tte/feedback', [TteController::class, 'feedback']);
+Route::get('/spon-tte/check-status', [TteController::class, 'checkStatus']);

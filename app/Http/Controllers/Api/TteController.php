@@ -105,4 +105,46 @@ class TteController extends Controller
             ], 500);
         }
     }
+
+    public function checkStatus(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'nik' => 'required|string',
+            'nip' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $query = TteRegistration::where('nik', $request->nik);
+        
+        if ($request->filled('nip')) {
+            $query->where('nip', $request->nip);
+        }
+
+        $registration = $query->latest()->first();
+
+        if ($registration) {
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'nama_lengkap' => $registration->nama_lengkap,
+                    'opd' => $registration->opd ? $registration->opd->nama : null,
+                    'status' => $registration->status,
+                    'catatan_admin' => $registration->catatan_admin,
+                    'created_at' => $registration->created_at,
+                ]
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Data pengajuan tidak ditemukan. Pastikan NIK dan NIP sudah benar.'
+        ], 404);
+    }
 }
