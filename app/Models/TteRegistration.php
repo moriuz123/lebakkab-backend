@@ -15,4 +15,9 @@ class TteRegistration extends Model
     {
         return $this->belongsTo(Opd::class);
     }
+
+    public function kecamatan()
+    {
+        return $this->belongsTo(Kecamatan::class);
+    }
 }

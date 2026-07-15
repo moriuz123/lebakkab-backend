@@ -24,7 +24,8 @@ class TteController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'opd_id' => 'required|exists:opds,id',
+            'instansi_type' => 'required|in:opd,kecamatan',
+            'instansi_id' => 'required|integer',
             'nik' => 'required|string|max:20',
             'nama_lengkap' => 'required|string|max:255',
             'nip' => 'nullable|string|max:255',
@@ -45,8 +46,7 @@ class TteController extends Controller
         try {
             $path = $request->file('surat_rekomendasi')->store('tte/rekomendasi', 's3');
 
-            $registration = TteRegistration::create([
-                'opd_id' => $request->opd_id,
+            $data = [
                 'nik' => $request->nik,
                 'nama_lengkap' => $request->nama_lengkap,
                 'nip' => $request->nip,
@@ -55,7 +55,15 @@ class TteController extends Controller
                 'no_hp' => $request->no_hp,
                 'surat_rekomendasi' => $path,
                 'status' => 'menunggu',
-            ]);
+            ];
+
+            if ($request->instansi_type === 'opd') {
+                $data['opd_id'] = $request->instansi_id;
+            } else {
+                $data['kecamatan_id'] = $request->instansi_id;
+            }
+
+            $registration = TteRegistration::create($data);
 
             return response()->json([
                 'success' => true,
@@ -134,7 +142,7 @@ class TteController extends Controller
                 'success' => true,
                 'data' => [
                     'nama_lengkap' => $registration->nama_lengkap,
-                    'opd' => $registration->opd ? $registration->opd->nama : null,
+                    'opd' => $registration->opd ? $registration->opd->nama : ($registration->kecamatan ? $registration->kecamatan->nama : null),
                     'status' => $registration->status,
                     'catatan_admin' => $registration->catatan_admin,
                     'created_at' => $registration->created_at,

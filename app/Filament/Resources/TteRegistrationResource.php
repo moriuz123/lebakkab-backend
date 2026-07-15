@@ -37,9 +37,12 @@ class TteRegistrationResource extends Resource
                 Card::make()->schema([
                     Forms\Components\Select::make('opd_id')
                         ->relationship('opd', 'nama')
-                        ->label('Instansi / OPD')
-                        ->searchable()
-                        ->required(),
+                        ->label('Instansi OPD')
+                        ->searchable(),
+                    Forms\Components\Select::make('kecamatan_id')
+                        ->relationship('kecamatan', 'nama')
+                        ->label('Kecamatan')
+                        ->searchable(),
                     Forms\Components\TextInput::make('nik')
                         ->label('NIK')
                         ->maxLength(20)
@@ -93,10 +96,9 @@ class TteRegistrationResource extends Resource
                 Tables\Columns\TextColumn::make('nama_lengkap')
                     ->label('Nama Lengkap')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('opd.nama')
+                Tables\Columns\TextColumn::make('instansi')
                     ->label('Instansi / OPD')
-                    ->searchable()
-                    ->sortable(),
+                    ->state(fn (TteRegistration $record) => $record->opd ? $record->opd->nama : ($record->kecamatan ? $record->kecamatan->nama : '-')),
                 Tables\Columns\TextColumn::make('no_hp')
                     ->label('No. HP'),
                 Tables\Columns\BadgeColumn::make('status')
@@ -118,6 +120,9 @@ class TteRegistrationResource extends Resource
                 Tables\Filters\SelectFilter::make('opd_id')
                     ->relationship('opd', 'nama')
                     ->label('Filter OPD'),
+                Tables\Filters\SelectFilter::make('kecamatan_id')
+                    ->relationship('kecamatan', 'nama')
+                    ->label('Filter Kecamatan'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

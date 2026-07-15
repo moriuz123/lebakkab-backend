@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create('tte_registrations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('opd_id')->nullable()->constrained('opds')->nullOnDelete();
+            $table->foreignId('kecamatan_id')->nullable()->constrained('kecamatans')->nullOnDelete();
             $table->string('nik', 20)->nullable();
             $table->string('nama_lengkap')->nullable();
             $table->string('nip')->nullable();
