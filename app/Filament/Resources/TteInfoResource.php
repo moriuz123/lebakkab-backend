@@ -48,6 +48,7 @@ class TteInfoResource extends Resource
                         ->maxLength(255),
                     Forms\Components\RichEditor::make('konten')
                         ->label('Konten (Penjelasan / Link Video)')
+                        ->helperText('Khusus kategori Video Tutorial, Anda cukup menempelkan Link YouTube (contoh: https://youtube.com/watch?v=...) dan sistem akan otomatis mengubahnya menjadi pemutar video.')
                         ->columnSpanFull(),
                     Forms\Components\FileUpload::make('gambar')
                         ->label('Gambar / Ilustrasi')
