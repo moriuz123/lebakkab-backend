@@ -44,6 +44,7 @@ class ManageSetting extends Page implements HasForms
                             TextInput::make('site_name')->label('Nama Website')->required(),
                             TextInput::make('site_description')->label('Deskripsi Website'),
                             FileUpload::make('logo')->label('Logo')->disk(config('filesystems.default'))->image()->directory('settings')->imagePreviewHeight('100'),
+                            FileUpload::make('login_background')->label('Background Login')->disk(config('filesystems.default'))->image()->directory('settings')->imagePreviewHeight('100'),
                             FileUpload::make('favicon')->label('Favicon')->disk(config('filesystems.default'))->directory('settings')->acceptedFileTypes([
                                 'image/x-icon', 
                                 'image/vnd.microsoft.icon', // Seringkali file .ico dibaca sebagai ini oleh server
