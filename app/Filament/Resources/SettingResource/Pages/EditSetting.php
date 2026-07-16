@@ -24,6 +24,8 @@ class EditSetting extends EditRecord
             Forms\Components\TextInput::make('site_description')->label('Deskripsi Website'),
             Forms\Components\FileUpload::make('logo')
                 ->disk('s3')->label('Logo')->directory('settings')->image(),
+            Forms\Components\FileUpload::make('login_background')
+                ->disk('s3')->label('Background Login')->directory('settings')->image(),
             Forms\Components\FileUpload::make('favicon')
                 ->disk('s3')->label('Favicon')->directory('settings')->acceptedFileTypes(['image/x-icon']),
             Forms\Components\TextInput::make('address')->label('Alamat'),

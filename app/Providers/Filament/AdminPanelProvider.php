@@ -137,6 +137,28 @@ class AdminPanelProvider extends PanelProvider
                     if ($setting->site_name) {
                         $panel->brandName($setting->site_name);
                     }
+                    if ($setting->login_background) {
+                        $bgUrl = \Illuminate\Support\Facades\Storage::disk('s3')->url($setting->login_background);
+                        $panel->renderHook(
+                            \Filament\View\PanelsRenderHook::AUTH_LOGIN_FORM_BEFORE,
+                            fn (): string => '<style>
+                                body.fi-body {
+                                    background-image: url("' . $bgUrl . '") !important;
+                                    background-size: cover !important;
+                                    background-position: center !important;
+                                    background-repeat: no-repeat !important;
+                                }
+                                .fi-simple-main-ctn {
+                                    background: rgba(255, 255, 255, 0.9) !important;
+                                    backdrop-filter: blur(8px) !important;
+                                    border-radius: 1rem !important;
+                                }
+                                .dark .fi-simple-main-ctn {
+                                    background: rgba(24, 24, 27, 0.9) !important;
+                                }
+                            </style>'
+                        );
+                    }
                 }
             }
         } catch (\Exception $e) {
