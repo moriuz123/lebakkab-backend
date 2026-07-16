@@ -13,7 +13,10 @@ class OpdController extends Controller
      */
     public function index()
     {
-        $opds = Opd::orderBy('urutan', 'asc')->get();
+        $opds = Opd::where('is_virtual', false)
+            ->where('is_published', true)
+            ->orderBy('urutan', 'asc')
+            ->get();
         return response()->json($opds);
     }
 

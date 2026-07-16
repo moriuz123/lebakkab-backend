@@ -81,6 +81,11 @@ class OpdResource extends Resource
             Toggle::make('is_published')
                 ->label('Tampilkan di Frontend')
                 ->default(true),
+                
+            Toggle::make('is_virtual')
+                ->label('Virtual Web / Agregator')
+                ->helperText('Aktifkan jika OPD ini hanya dipakai sebagai identitas web (Contoh: Web PPID). Tidak akan muncul di daftar Instansi.')
+                ->default(false),
         ]);
     }
 
@@ -101,11 +106,21 @@ class OpdResource extends Resource
                 TextColumn::make('singkatan'),
                 TextColumn::make('pimpinan'),
 
+                TextColumn::make('email')
+                    ->label('Email')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('telepon'),
 
                 IconColumn::make('is_published')
-                    ->label('Publikasi')
+                    ->label('Publish')
                     ->boolean(),
+
+                IconColumn::make('is_virtual')
+                    ->label('Virtual')
+                    ->boolean()
+                    ->toggleable(),
 
                 TextColumn::make('urutan'),
             ])

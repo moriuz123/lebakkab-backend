@@ -9,6 +9,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Set;
 
 class KategoriDokumenResource extends Resource
@@ -34,6 +35,11 @@ class KategoriDokumenResource extends Resource
                     ->afterStateUpdated(function (Set $set, $state) {
                         $set('slug', str_replace(' ', '-', $state));
                     }),
+                Select::make('parent_id')
+                    ->label('Kategori Induk (Pilih Jika Ini Sub-Kategori)')
+                    ->relationship('parent', 'nama')
+                    ->searchable()
+                    ->preload(),
                 ...\App\Filament\Support\OpdFields::form(false),
             ]);
     }
@@ -43,8 +49,11 @@ class KategoriDokumenResource extends Resource
     {
         return $table
             ->columns([
-
                 Tables\Columns\TextColumn::make('nama')->searchable(),
+                Tables\Columns\TextColumn::make('parent.nama')
+                    ->label('Kategori Induk')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('slug')->searchable(),
                 ...\App\Filament\Support\OpdFields::tableColumns(),
             ])

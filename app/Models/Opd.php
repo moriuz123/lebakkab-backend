@@ -21,6 +21,7 @@ class Opd extends Model
         'peta_embed',
         'urutan',
         'is_published',
+        'is_virtual',
     ];
 
     public function beritas()

@@ -59,9 +59,10 @@ class DokumenResource extends Resource
                     ->label('Kategori Dokumen')
                     ->relationship('kategoris', 'nama', function ($query) {
                         return auth()->user()->hasRole('super_admin') 
-                            ? $query 
-                            : $query->where('opd_id', auth()->user()->opd_id);
+                            ? $query->with('parent') 
+                            : $query->where('opd_id', auth()->user()->opd_id)->with('parent');
                     })
+                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->parent ? "{$record->parent->nama} - {$record->nama}" : $record->nama)
                     ->multiple()
                     ->preload()
                     ->required(),
