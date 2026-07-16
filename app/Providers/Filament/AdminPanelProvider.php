@@ -25,7 +25,7 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        return $panel
+        $panel
             ->default()
             ->id('admin')
             ->brandName('Lebakkab.go.id')
@@ -122,7 +122,27 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ]);
 
-        // ✅ Tambahkan tombol "Lihat Website" di top bar
+        // Fetch dynamic logo and favicon from database
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasTable('settings')) {
+                $setting = \App\Models\Setting::first();
+                if ($setting) {
+                    if ($setting->logo) {
+                        $panel->brandLogo(\Illuminate\Support\Facades\Storage::disk('s3')->url($setting->logo));
+                        $panel->brandLogoHeight('3rem');
+                    }
+                    if ($setting->favicon) {
+                        $panel->favicon(\Illuminate\Support\Facades\Storage::disk('s3')->url($setting->favicon));
+                    }
+                    if ($setting->site_name) {
+                        $panel->brandName($setting->site_name);
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            // Ignore during migrations or when DB is unavailable
+        }
 
+        return $panel;
     }
 }
