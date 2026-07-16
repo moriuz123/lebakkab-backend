@@ -55,9 +55,15 @@ class DokumenResource extends Resource
                     ->label('Deskripsi')
                     ->rows(3),
 
-                Select::make('kategori_dokumen_id')
-                    ->label('Kategori')
-                    ->relationship('kategori', 'nama', fn (\Illuminate\Database\Eloquent\Builder $query) => \App\Filament\Support\OpdFields::applyOpdScope($query))
+                Select::make('kategoris')
+                    ->label('Kategori Dokumen')
+                    ->relationship('kategoris', 'nama', function ($query) {
+                        return auth()->user()->hasRole('super_admin') 
+                            ? $query 
+                            : $query->where('opd_id', auth()->user()->opd_id);
+                    })
+                    ->multiple()
+                    ->preload()
                     ->required(),
 
                 Radio::make('sumber_type')
@@ -102,7 +108,7 @@ class DokumenResource extends Resource
                 ->toggleable(isToggledHiddenByDefault: true)
                 ->extraAttributes(['class' => 'whitespace-normal break-words']),
 
-            \Filament\Tables\Columns\TextColumn::make('kategori.nama')
+            \Filament\Tables\Columns\TextColumn::make('kategoris.nama')
                 ->label('Kategori')
                 ->searchable()
                 ->sortable()
@@ -114,11 +120,10 @@ class DokumenResource extends Resource
             ->filters([
                 ...\App\Filament\Support\OpdFields::filters(),
 
-                Tables\Filters\SelectFilter::make('kategori_dokumen_id')
-                    ->label('Kategori')
-                    ->relationship('kategori', 'nama', fn (\Illuminate\Database\Eloquent\Builder $query) => \App\Filament\Support\OpdFields::applyOpdScope($query))
-                    ->searchable()
-                    ->preload(),
+                Tables\Filters\SelectFilter::make('kategoris')
+                    ->label('Kategori Dokumen')
+                    ->relationship('kategoris', 'nama')
+                    ->multiple(),
             ])
             ->defaultSort('created_at', 'desc')
             ->actions([

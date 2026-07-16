@@ -16,7 +16,6 @@ class Dokumen extends Model
         'judul',
         'opd_id',
         'tampil_di_portal',
-        'kategori_dokumen_id',
         'slug',
         'sumber',
         'file_path',
@@ -28,9 +27,9 @@ class Dokumen extends Model
         'tampil_di_portal' => 'boolean',
     ];
 
-    public function kategori()
+    public function kategoris()
     {
-        return $this->belongsTo(KategoriDokumen::class, 'kategori_dokumen_id');
+        return $this->belongsToMany(KategoriDokumen::class, 'dokumen_kategori');
     }
 
 

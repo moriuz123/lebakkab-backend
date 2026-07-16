@@ -124,4 +124,8 @@ Route::post('/polling/vote', [PollingController::class, 'vote']);
 Route::get('/spon-tte/info', [TteController::class, 'getInfo']);
 Route::post('/spon-tte/register', [TteController::class, 'register']);
 Route::post('/spon-tte/feedback', [TteController::class, 'feedback']);
+
+Route::post('/ppid/request', [App\Http\Controllers\Api\PpidController::class, 'storeRequest']);
+Route::post('/ppid/objection', [App\Http\Controllers\Api\PpidController::class, 'storeObjection']);
+Route::post('/ppid/check-status', [App\Http\Controllers\Api\PpidController::class, 'checkStatus']);
 Route::get('/spon-tte/check-status', [TteController::class, 'checkStatus']);

@@ -17,6 +17,11 @@ class KategoriDokumen extends Model
         return $this->belongsTo(Opd::class);
     }
 
+    public function dokumens()
+    {
+        return $this->belongsToMany(Dokumen::class, 'dokumen_kategori');
+    }
+
     protected static function booted(): void
     {
         static::saving(function ($model) {
