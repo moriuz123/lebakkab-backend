@@ -142,11 +142,12 @@ class AdminPanelProvider extends PanelProvider
                         $panel->renderHook(
                             \Filament\View\PanelsRenderHook::AUTH_LOGIN_FORM_BEFORE,
                             fn (): string => '<style>
-                                body.fi-body {
+                                body.fi-body, html, .fi-simple-layout {
                                     background-image: url("' . $bgUrl . '") !important;
                                     background-size: cover !important;
                                     background-position: center !important;
                                     background-repeat: no-repeat !important;
+                                    background-attachment: fixed !important;
                                 }
                                 .fi-simple-main-ctn {
                                     background: rgba(255, 255, 255, 0.9) !important;
