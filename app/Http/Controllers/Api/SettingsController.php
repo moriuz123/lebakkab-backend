@@ -33,7 +33,7 @@ class SettingsController extends Controller
         });
 
         // Parse backgrounds JSON and map to URLs
-        $backgrounds = is_string($setting->backgrounds) ? json_decode($setting->backgrounds, true) : $setting->backgrounds;
+        $backgrounds = $setting && is_string($setting->backgrounds) ? json_decode($setting->backgrounds, true) : ($setting->backgrounds ?? []);
         $backgroundUrls = [];
         if (is_array($backgrounds)) {
             foreach ($backgrounds as $bg) {
