@@ -82,6 +82,11 @@ class ManageSetting extends Page implements HasForms
             $this->form->getState()
         );
 
+        \Illuminate\Support\Facades\Cache::forget('settings.header.' . ($opdId ?? 'global'));
+        \Illuminate\Support\Facades\Cache::forget('settings.footer.' . ($opdId ?? 'global'));
+        \Illuminate\Support\Facades\Cache::forget('settings.header.global');
+        \Illuminate\Support\Facades\Cache::forget('settings.footer.global');
+
         Notification::make()
             ->title('Pengaturan berhasil disimpan.')
             ->success()
