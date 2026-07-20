@@ -55,7 +55,7 @@ class ManageSetting extends Page implements HasForms
                             FileUpload::make('logo_tagline')->label('Logo Tagline')->disk(config('filesystems.default'))->directory('settings')->image(),
                             FileUpload::make('logo_tagline2')->label('Logo Tagline 2')->disk('s3')->directory('settings')->image(),
                             FileUpload::make('logo_tagline3')->label('Logo Tagline 3')->disk('s3')->directory('settings')->image(),
-                            FileUpload::make('logo_hero')->label('Logo Hero')->disk('s3')->directory('settings')->image(),
+                            FileUpload::make('backgrounds')->label('Background Hero')->disk('s3')->directory('settings')->image()->multiple()->maxFiles(3),
                         ])
                     ]),
                     Tabs\Tab::make('SEO')->schema([

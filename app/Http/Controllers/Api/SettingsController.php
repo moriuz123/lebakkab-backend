@@ -23,7 +23,7 @@ class SettingsController extends Controller
                 'logo_tagline',
                 'favicon',
                 'photo_bupati',
-                'logo_hero',
+                'backgrounds',
                 'logo_tagline2',
                 'logo_tagline3'
             );
@@ -31,6 +31,15 @@ class SettingsController extends Controller
             $opdSetting = $opdId ? (clone $query)->where('opd_id', $opdId)->first() : null;
             return $opdSetting ?? $query->whereNull('opd_id')->first();
         });
+
+        // Parse backgrounds JSON and map to URLs
+        $backgrounds = is_string($setting->backgrounds) ? json_decode($setting->backgrounds, true) : $setting->backgrounds;
+        $backgroundUrls = [];
+        if (is_array($backgrounds)) {
+            foreach ($backgrounds as $bg) {
+                $backgroundUrls[] = Storage::url($bg);
+            }
+        }
 
         return response()->json([
             'status' => 'success',
@@ -42,7 +51,7 @@ class SettingsController extends Controller
                  'favicon_url'      => $setting && $setting->favicon ? Storage::url($setting->favicon) : null,
                 'logo_tagline_url' => $setting && $setting->logo_tagline ? Storage::url($setting->logo_tagline) : null,
                 'photo_bupati'     => $setting && $setting->photo_bupati ? Storage::url($setting->photo_bupati) : null,
-                'logo_hero_url'     => $setting && $setting->logo_hero ? Storage::url($setting->logo_hero) : null,
+                'backgrounds'       => $backgroundUrls,
                 'logo_tagline2_url' => $setting && $setting->logo_tagline2 ? Storage::url($setting->logo_tagline2) : null,
                 'logo_tagline3_url' => $setting && $setting->logo_tagline3 ? Storage::url($setting->logo_tagline3) : null,
             ],
@@ -68,7 +77,7 @@ class SettingsController extends Controller
                 'youtube',
                 'whatsapp',
                 'footer_text',
-                'logo_hero',
+                'backgrounds',
                 'logo_tagline2',
                 'logo_tagline3'
             );
@@ -92,7 +101,6 @@ class SettingsController extends Controller
                 'youtube'      => $setting->youtube ?? '',
                 'whatsapp'     => $setting->whatsapp ?? '',
                 'footer_text'  => $setting->footer_text ?? '© ' . date('Y') . ' ' . ($setting->site_name ?? 'Website'),
-                'logo_hero_url'     => $setting && $setting->logo_hero ? Storage::url($setting->logo_hero) : null,
                 'logo_tagline2_url' => $setting && $setting->logo_tagline2 ? Storage::url($setting->logo_tagline2) : null,
                 'logo_tagline3_url' => $setting && $setting->logo_tagline3 ? Storage::url($setting->logo_tagline3) : null,
             ],
