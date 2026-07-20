@@ -11,17 +11,23 @@ class Opd extends Model
         'slug',
         'singkatan',
         'pimpinan',
+        'pimpinan_id',
         'deskripsi',
         'email',
         'telepon',
         'website',
         'alamat',
+        'social_media',
         'logo',
         'foto_kantor',
         'peta_embed',
         'urutan',
         'is_published',
         'is_virtual',
+    ];
+
+    protected $casts = [
+        'social_media' => 'array',
     ];
 
     public function beritas()
@@ -52,5 +58,15 @@ class Opd extends Model
     public function setting()
     {
         return $this->hasOne(Setting::class);
+    }
+
+    public function profil()
+    {
+        return $this->hasOne(ProfilOpd::class);
+    }
+
+    public function pejabatPimpinan()
+    {
+        return $this->belongsTo(Pejabat::class, 'pimpinan_id');
     }
 }

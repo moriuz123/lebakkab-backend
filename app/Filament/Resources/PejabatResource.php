@@ -50,7 +50,7 @@ class PejabatResource extends Resource
                         ->disk('s3')
                         ->directory('pejabat')
                         ->image()
-                        ->required(),
+                        ->helperText('Biarkan kosong jika ingin menggunakan foto default (inisial nama).'),
                 ])->columns(2),
                 
                 Forms\Components\Section::make('Detail Pegawai & Periode')->schema([
@@ -98,7 +98,8 @@ class PejabatResource extends Resource
                 Tables\Columns\ImageColumn::make('foto')
                     ->disk('s3')
                     ->label('Foto')
-                    ->circular(),
+                    ->circular()
+                    ->defaultImageUrl(fn ($record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->nama) . '&color=FFFFFF&background=0D8ABC'),
                     
                 Tables\Columns\TextColumn::make('nama')
                     ->label('Nama')

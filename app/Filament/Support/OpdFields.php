@@ -62,4 +62,12 @@ class OpdFields
                 ->hidden(fn () => auth()->check() && !auth()->user()->hasRole('super_admin') && auth()->user()->opd_id),
         ];
     }
+
+    public static function getOpdIdForNewRecord(array $data)
+    {
+        if (auth()->check() && !auth()->user()->hasRole('super_admin') && auth()->user()->opd_id) {
+            return auth()->user()->opd_id;
+        }
+        return $data['opd_id'] ?? null;
+    }
 }

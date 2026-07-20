@@ -15,4 +15,9 @@ class CreatePejabat extends CreateRecord
         $data['opd_id'] = \App\Filament\Support\OpdFields::getOpdIdForNewRecord($data);
         return $data;
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
