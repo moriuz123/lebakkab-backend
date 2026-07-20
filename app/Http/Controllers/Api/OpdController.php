@@ -13,7 +13,8 @@ class OpdController extends Controller
      */
     public function index()
     {
-        $opds = Opd::where('is_virtual', false)
+        $opds = Opd::with(['pejabatPimpinan', 'profil'])
+            ->where('is_virtual', false)
             ->where('is_published', true)
             ->orderBy('urutan', 'asc')
             ->get();
@@ -25,7 +26,7 @@ class OpdController extends Controller
      */
     public function show($slug)
     {
-        $opd = Opd::where('slug', $slug)->firstOrFail();
+        $opd = Opd::with(['pejabatPimpinan', 'profil'])->where('slug', $slug)->firstOrFail();
         return response()->json($opd);
     }
 }
