@@ -75,6 +75,33 @@ class ManageProfilDaerah extends Page implements HasForms
                             ->rows(5)
                             ->columnSpanFull(),
                     ]),
+                    
+                    Tabs\Tab::make('Kontak')->schema([
+                        \Filament\Forms\Components\TextInput::make('email')->label('Email')->email(),
+                        \Filament\Forms\Components\TextInput::make('telepon')->label('Telepon'),
+                        \Filament\Forms\Components\TextInput::make('whatsapp')->label('WhatsApp'),
+                        \Filament\Forms\Components\TextInput::make('website')->label('Website URL')->url(),
+                        Textarea::make('alamat')->label('Alamat Lengkap')->columnSpanFull(),
+                    ]),
+                    
+                    Tabs\Tab::make('Sosial Media')->schema([
+                        \Filament\Forms\Components\Repeater::make('social_media')
+                            ->label('Daftar Sosial Media')
+                            ->schema([
+                                \Filament\Forms\Components\TextInput::make('platform')
+                                    ->label('Platform (Misal: Facebook, Instagram)')
+                                    ->required(),
+                                \Filament\Forms\Components\TextInput::make('url')
+                                    ->label('URL / Tautan')
+                                    ->url()
+                                    ->required(),
+                                \Filament\Forms\Components\TextInput::make('icon_class')
+                                    ->label('Class Ikon (Misal: fab fa-instagram)'),
+                            ])
+                            ->columns(3)
+                            ->addActionLabel('Tambah Sosial Media')
+                            ->columnSpanFull(),
+                    ]),
                 ])->persistTabInQueryString()
             ]);
     }

@@ -58,18 +58,6 @@ class ManageSetting extends Page implements HasForms
                             FileUpload::make('logo_hero')->label('Logo Hero')->disk('s3')->directory('settings')->image(),
                         ])
                     ]),
-                    Tabs\Tab::make('Kontak')->schema([
-                        TextInput::make('address')->label('Alamat'),
-                        TextInput::make('email')->label('Email')->email(),
-                        TextInput::make('phone')->label('Telepon'),
-                        TextInput::make('whatsapp')->label('WhatsApp'),
-                    ]),
-                    Tabs\Tab::make('Sosial Media')->schema([
-                        TextInput::make('facebook')->label('Facebook'),
-                        TextInput::make('instagram')->label('Instagram'),
-                        TextInput::make('twitter')->label('Twitter'),
-                        TextInput::make('youtube')->label('YouTube'),
-                    ]),
                     Tabs\Tab::make('SEO')->schema([
                         Textarea::make('meta_keywords')->label('Meta Keywords'),
                         Textarea::make('meta_description')->label('Meta Description'),
@@ -77,10 +65,6 @@ class ManageSetting extends Page implements HasForms
                     ]),
                     Tabs\Tab::make('Footer')->schema([
                         TextInput::make('footer_text')->label('Teks Footer'),
-                    ]),
-                    Tabs\Tab::make('Peta & Lokasi')->schema([
-                        Textarea::make('maps_embed')->label('Embed Peta'),
-                        TextInput::make('maps_link')->label('Link Peta'),
                     ]),
 
                     Tabs\Tab::make('Lainnya')->schema([
