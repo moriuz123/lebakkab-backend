@@ -89,6 +89,7 @@ class MenuResource extends Resource
                                 case Menu::LINK_MODUL:
                                     return collect([
                                         'profil-daerah' => 'Profil Kabupaten',
+                                        'profil-opd' => 'Profil OPD',
                                         'pejabat' => 'Data Pejabat',
                                         'aplikasi' => 'Data Aplikasi',
                                         'kategori_fotos' => 'Kategori Foto',
