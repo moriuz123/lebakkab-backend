@@ -26,17 +26,20 @@ class ManageSetting extends Page implements HasForms
 
     public array $data = [];
 
+    public ?Setting $setting = null;
+
     public function mount(): void
     {
         $opdId = auth()->user()->opd_id;
-        $setting = Setting::firstOrNew(['opd_id' => $opdId]);
-        $this->form->fill($setting->toArray());
+        $this->setting = Setting::firstOrNew(['opd_id' => $opdId]);
+        $this->form->fill($this->setting->toArray());
     }
 
     public function form(Form $form): Form
     {
         return $form
             ->statePath('data')
+            ->model($this->setting ?? Setting::class)
             ->schema([
                 Tabs::make('Pengaturan')->tabs([
                     Tabs\Tab::make('Umum')->schema([

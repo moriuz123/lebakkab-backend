@@ -28,6 +28,7 @@ class OpdFields
                 ->nullable()
                 ->default(fn () => auth()->check() ? auth()->user()->opd_id : null)
                 ->disabled(fn () => auth()->check() && !auth()->user()->hasRole('super_admin') && auth()->user()->opd_id)
+                ->live()
                 ->dehydrated(),
         ];
 

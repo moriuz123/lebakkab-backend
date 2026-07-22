@@ -37,7 +37,16 @@ class KategoriDokumenResource extends Resource
                     }),
                 Select::make('parent_id')
                     ->label('Kategori Induk (Pilih Jika Ini Sub-Kategori)')
-                    ->relationship('parent', 'nama')
+                    ->relationship('parent', 'nama', function ($query, \Filament\Forms\Get $get) {
+                        $opdId = $get('opd_id');
+                        if (!auth()->user()->hasRole('super_admin')) {
+                            $opdId = auth()->user()->opd_id;
+                        }
+                        if ($opdId) {
+                            $query->where('opd_id', $opdId);
+                        }
+                        return $query;
+                    })
                     ->searchable()
                     ->preload(),
                 ...\App\Filament\Support\OpdFields::form(false),

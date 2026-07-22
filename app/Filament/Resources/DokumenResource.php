@@ -57,10 +57,15 @@ class DokumenResource extends Resource
 
                 Select::make('kategoris')
                     ->label('Kategori Dokumen')
-                    ->relationship('kategoris', 'nama', function ($query) {
-                        return auth()->user()->hasRole('super_admin') 
-                            ? $query->with('parent') 
-                            : $query->where('opd_id', auth()->user()->opd_id)->with('parent');
+                    ->relationship('kategoris', 'nama', function ($query, \Filament\Forms\Get $get) {
+                        $opdId = $get('opd_id');
+                        if (!auth()->user()->hasRole('super_admin')) {
+                            $opdId = auth()->user()->opd_id;
+                        }
+                        if ($opdId) {
+                            $query->where('opd_id', $opdId);
+                        }
+                        return $query->with('parent');
                     })
                     ->getOptionLabelFromRecordUsing(fn ($record) => $record->parent ? "{$record->parent->nama} - {$record->nama}" : $record->nama)
                     ->multiple()
@@ -123,7 +128,13 @@ class DokumenResource extends Resource
 
                 Tables\Filters\SelectFilter::make('kategoris')
                     ->label('Kategori Dokumen')
-                    ->relationship('kategoris', 'nama')
+                    ->relationship('kategoris', 'nama', function ($query) {
+                        if (!auth()->user()->hasRole('super_admin') && auth()->user()->opd_id) {
+                            $query->where('opd_id', auth()->user()->opd_id);
+                        }
+                        return $query->with('parent');
+                    })
+                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->parent ? "{$record->parent->nama} - {$record->nama}" : $record->nama)
                     ->multiple(),
             ])
             ->defaultSort('created_at', 'desc')
