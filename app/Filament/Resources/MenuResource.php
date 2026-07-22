@@ -100,6 +100,7 @@ class MenuResource extends Resource
                                         'opd' => 'OPD',
                                         'layanan' => 'Info Layanan',
                                         'berita' => 'Semua Berita',
+                                        'dokumen' => 'Semua Dokumen',
                                         'kecamatan' => 'Data Kecamatan',
                                         'spon-tte' => 'Modul SPON TTE',
                                     ]);
