@@ -56,6 +56,7 @@ class BannerResource extends Resource
                 ->image()
                 ->directory('banner')
                 ->preserveFilenames()
+                ->multiple()
                 ->required(),
         ]);
     }

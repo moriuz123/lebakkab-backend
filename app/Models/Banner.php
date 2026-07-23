@@ -22,5 +22,6 @@ class Banner extends Model
 
     protected $casts = [
         'tampil_di_portal' => 'boolean',
+        'gambar' => 'array',
     ];
 }
