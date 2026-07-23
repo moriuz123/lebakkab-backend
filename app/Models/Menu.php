@@ -21,6 +21,7 @@ class Menu extends Model
     public const LINK_EKSTERNAL = 'eksternal';
     public const LINK_PARENT = 'parent';
     public const LINK_PEJABAT = 'pejabat';
+    public const LINK_KATEGORI_BANNER = 'kategori_banner';
 
     protected $fillable = [
         'icon', // ✅ tambahkan
@@ -99,6 +100,8 @@ class Menu extends Model
                 return '/berita/kategori/' . $this->link_ref;
             case self::LINK_KATEGORI_DOKUMEN: // 🔹 kategori dokumen by slug
                 return '/dokumen/kategori/' . $this->link_ref;
+            case self::LINK_KATEGORI_BANNER:
+                return '/banner/' . $this->link_ref;
             case self::LINK_MODUL:
                 // Menyesuaikan dengan route frontend (Vue router)
                 if ($this->link_ref === 'profil-daerah') {

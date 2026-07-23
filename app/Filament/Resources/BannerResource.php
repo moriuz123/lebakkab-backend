@@ -47,10 +47,7 @@ class BannerResource extends Resource
 
             Select::make('kategori')
                 ->label('Kategori')
-                ->options([
-                    'ucapan' => 'Ucapan',
-                    'infografis' => 'Infografis',
-                ])
+                ->options(fn() => \App\Models\KategoriBanner::pluck('nama', 'slug'))
                 ->required(),
 
             FileUpload::make('gambar')
@@ -92,10 +89,7 @@ class BannerResource extends Resource
 
                 Tables\Filters\SelectFilter::make('kategori')
                     ->label('Kategori')
-                    ->options([
-                        'ucapan' => 'Ucapan',
-                        'infografis' => 'Infografis',
-                    ])
+                    ->options(fn() => \App\Models\KategoriBanner::pluck('nama', 'slug'))
             ])
 
             ->actions([
