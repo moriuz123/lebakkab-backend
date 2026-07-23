@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Models\Concerns\BelongsToOpd;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Banner extends Model
 {
@@ -24,4 +25,15 @@ class Banner extends Model
         'tampil_di_portal' => 'boolean',
         'gambar' => 'array',
     ];
+
+    protected static function booted()
+    {
+        static::saved(function ($banner) {
+            Cache::flush();
+        });
+
+        static::deleted(function ($banner) {
+            Cache::flush();
+        });
+    }
 }
