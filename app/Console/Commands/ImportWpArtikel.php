@@ -40,6 +40,14 @@ class ImportWpArtikel extends Command
             $opdId = $opd ? $opd->id : null;
         }
 
+        $userId = 1;
+        if ($opdId) {
+            $user = \App\Models\User::where('opd_id', $opdId)->first();
+            if ($user) {
+                $userId = $user->id;
+            }
+        }
+
         // Kategori "Artikel"
         $kategoriId = $this->argument('kategori_id');
         if (!$kategoriId) {
@@ -120,7 +128,7 @@ class ImportWpArtikel extends Command
                         'tanggal_publish' => $post['date'],
                         'is_active' => true,
                         'tampil_di_portal' => true,
-                        'user_id' => 1,
+                        'user_id' => $userId,
                         'created_at' => $post['date'],
                         'updated_at' => $post['modified'],
                     ]);
