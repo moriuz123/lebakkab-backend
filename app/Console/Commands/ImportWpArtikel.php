@@ -36,7 +36,7 @@ class ImportWpArtikel extends Command
         // Default Diskominfo
         $opdId = $this->argument('opd_id');
         if (!$opdId) {
-            $opd = Opd::where('nama', 'like', '%kominfo%')->first();
+            $opd = Opd::where('nama', 'like', '%komunikasi informatika%')->orWhere('nama', 'like', '%kominfo%')->first();
             $opdId = $opd ? $opd->id : null;
         }
 
@@ -73,6 +73,7 @@ class ImportWpArtikel extends Command
                     ->get("https://diskominfosp.lebakkab.go.id/wp-json/wp/v2/posts", [
                         'per_page' => 50,
                         'page' => $page,
+                        'categories' => 28, // Hanya kategori Artikel dari WP lama
                         '_embed' => true, // Untuk ambil thumbnail
                     ]);
 

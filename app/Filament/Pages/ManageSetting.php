@@ -70,6 +70,39 @@ class ManageSetting extends Page implements HasForms
                         TextInput::make('footer_text')->label('Teks Footer'),
                     ]),
 
+                    Tabs\Tab::make('Call to Action (CTA)')->schema([
+                        TextInput::make('cta_text')
+                            ->label('Teks Tombol CTA')
+                            ->placeholder('Contoh: Lapor Sekarang!'),
+                        \Filament\Forms\Components\Select::make('cta_link_type')
+                            ->label('Tipe Link CTA')
+                            ->options([
+                                \App\Models\Menu::LINK_MODUL => 'Modul Internal',
+                                \App\Models\Menu::LINK_EKSTERNAL => 'Eksternal',
+                            ])
+                            ->reactive(),
+                        \Filament\Forms\Components\Select::make('cta_link_ref')
+                            ->label('Pilih Modul')
+                            ->options([
+                                'profil-daerah' => 'Profil Kabupaten',
+                                'profil-opd' => 'Profil OPD',
+                                'pejabat' => 'Data Pejabat',
+                                'aplikasi' => 'Data Aplikasi',
+                                'pengumuman' => 'Pengumuman',
+                                'agenda' => 'Agenda Pemerintahan',
+                                'opd' => 'OPD',
+                                'layanan' => 'Info Layanan',
+                                'berita' => 'Semua Berita',
+                                'dokumen' => 'Semua Dokumen',
+                                'spon-tte' => 'Modul SPON TTE',
+                                'ppid' => 'Modul PPID',
+                            ])
+                            ->hidden(fn(\Filament\Forms\Get $get) => $get('cta_link_type') !== \App\Models\Menu::LINK_MODUL),
+                        TextInput::make('cta_url')
+                            ->label('URL Eksternal')
+                            ->url()
+                            ->hidden(fn(\Filament\Forms\Get $get) => $get('cta_link_type') !== \App\Models\Menu::LINK_EKSTERNAL),
+                    ]),
                     Tabs\Tab::make('Lainnya')->schema([
                         Toggle::make('maintenance_mode')->label('Mode Pemeliharaan'),
                     ]),

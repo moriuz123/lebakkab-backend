@@ -51,6 +51,39 @@ class EditSetting extends EditRecord
                 ->disk('s3')->label('Logo Tagline 2')->directory('settings')->image(),
             Forms\Components\FileUpload::make('logo_tagline3')
                 ->disk('s3')->label('Logo Tagline 3')->directory('settings')->image(),
+            Forms\Components\Section::make('Pengaturan Tombol CTA Header')->schema([
+                Forms\Components\TextInput::make('cta_text')
+                    ->label('Teks Tombol CTA')
+                    ->placeholder('Contoh: Lapor Sekarang!'),
+                Forms\Components\Select::make('cta_link_type')
+                    ->label('Tipe Link CTA')
+                    ->options([
+                        \App\Models\Menu::LINK_MODUL => 'Modul Internal',
+                        \App\Models\Menu::LINK_EKSTERNAL => 'Eksternal',
+                    ])
+                    ->reactive(),
+                Forms\Components\Select::make('cta_link_ref')
+                    ->label('Pilih Modul')
+                    ->options([
+                        'profil-daerah' => 'Profil Kabupaten',
+                        'profil-opd' => 'Profil OPD',
+                        'pejabat' => 'Data Pejabat',
+                        'aplikasi' => 'Data Aplikasi',
+                        'pengumuman' => 'Pengumuman',
+                        'agenda' => 'Agenda Pemerintahan',
+                        'opd' => 'OPD',
+                        'layanan' => 'Info Layanan',
+                        'berita' => 'Semua Berita',
+                        'dokumen' => 'Semua Dokumen',
+                        'spon-tte' => 'Modul SPON TTE',
+                        'ppid' => 'Modul PPID',
+                    ])
+                    ->hidden(fn($get) => $get('cta_link_type') !== \App\Models\Menu::LINK_MODUL),
+                Forms\Components\TextInput::make('cta_url')
+                    ->label('URL Eksternal')
+                    ->url()
+                    ->hidden(fn($get) => $get('cta_link_type') !== \App\Models\Menu::LINK_EKSTERNAL),
+            ]),
         ];
     }
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\HeroSliderController;
 use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\DataAplikasiController;
+use App\Http\Controllers\Api\KontakController;
 use App\Http\Controllers\Api\HalamanStatisController;
 use App\Http\Controllers\Api\DokumenController;
 use App\Http\Controllers\Api\OpdController;
@@ -54,6 +55,8 @@ Route::get('/banner', [BannerController::class, 'index']);
 Route::get('/banner/{kategori}', [BannerController::class, 'byKategori']);
 
 // Modul data-aplikasi
+Route::get('/kontak', [KontakController::class, 'index']);
+
 Route::get('/data-aplikasi', [DataAplikasiController::class, 'index']);
 Route::get('/data-aplikasi/{id}', [DataAplikasiController::class, 'show']);
 
@@ -128,4 +131,5 @@ Route::post('/spon-tte/feedback', [TteController::class, 'feedback'])->middlewar
 Route::post('/ppid/request', [App\Http\Controllers\Api\PpidController::class, 'storeRequest'])->middleware('throttle:5,1');
 Route::post('/ppid/objection', [App\Http\Controllers\Api\PpidController::class, 'storeObjection'])->middleware('throttle:5,1');
 Route::post('/ppid/check-status', [App\Http\Controllers\Api\PpidController::class, 'checkStatus'])->middleware('throttle:20,1');
+Route::get('/ppid/layanan', [App\Http\Controllers\Api\PpidController::class, 'getLayanan']);
 Route::get('/spon-tte/check-status', [TteController::class, 'checkStatus'])->middleware('throttle:20,1');

@@ -25,7 +25,11 @@ class SettingsController extends Controller
                 'photo_bupati',
                 'backgrounds',
                 'logo_tagline2',
-                'logo_tagline3'
+                'logo_tagline3',
+                'cta_text',
+                'cta_link_type',
+                'cta_link_ref',
+                'cta_url'
             );
 
             $opdSetting = $opdId ? (clone $query)->where('opd_id', $opdId)->first() : null;
@@ -38,6 +42,16 @@ class SettingsController extends Controller
         if (is_array($backgrounds)) {
             foreach ($backgrounds as $bg) {
                 $backgroundUrls[] = Storage::url($bg);
+            }
+        }
+
+        // Resolve CTA URL based on link type
+        $ctaUrl = null;
+        if ($setting && $setting->cta_text) {
+            if ($setting->cta_link_type === \App\Models\Menu::LINK_MODUL) {
+                $ctaUrl = '/' . ltrim($setting->cta_link_ref, '/');
+            } elseif ($setting->cta_link_type === \App\Models\Menu::LINK_EKSTERNAL) {
+                $ctaUrl = $setting->cta_url;
             }
         }
 
@@ -54,6 +68,8 @@ class SettingsController extends Controller
                 'backgrounds'       => $backgroundUrls,
                 'logo_tagline2_url' => $setting && $setting->logo_tagline2 ? Storage::url($setting->logo_tagline2) : null,
                 'logo_tagline3_url' => $setting && $setting->logo_tagline3 ? Storage::url($setting->logo_tagline3) : null,
+                'cta_text'         => $setting->cta_text ?? null,
+                'cta_url'          => $ctaUrl,
             ],
         ]);
     }

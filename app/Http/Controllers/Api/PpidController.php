@@ -73,4 +73,27 @@ class PpidController extends Controller
             'data' => new PpidRequestResource($ppidRequest)
         ]);
     }
+    public function getLayanan(Request $request)
+    {
+        $opdId = $request->query('opd_id');
+
+        $query = \App\Models\LayananPpid::query();
+
+        if ($opdId) {
+            $query->where('opd_id', $opdId);
+        } else {
+            $query->whereNull('opd_id');
+        }
+
+        $layanan = $query->orderBy('sort_order', 'asc')->get();
+
+        // If no layanan for OPD, fallback to main
+        if ($layanan->isEmpty() && $opdId) {
+            $layanan = \App\Models\LayananPpid::whereNull('opd_id')->orderBy('sort_order', 'asc')->get();
+        }
+
+        return response()->json([
+            'data' => $layanan
+        ]);
+    }
 }

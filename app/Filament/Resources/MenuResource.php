@@ -104,6 +104,8 @@ class MenuResource extends Resource
                                         'dokumen' => 'Semua Dokumen',
                                         'kecamatan' => 'Data Kecamatan',
                                         'spon-tte' => 'Modul SPON TTE',
+                                        'ppid' => 'Modul PPID',
+                                        'kontak' => 'Kontak Kami',
                                     ]);
                                 case Menu::LINK_KATEGORI_DOKUMEN: // 🔹 ambil langsung dari tabel kategori_dokumens
                                     return \App\Models\KategoriDokumen::pluck('nama', 'slug');
