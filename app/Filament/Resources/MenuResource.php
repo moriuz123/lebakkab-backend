@@ -124,7 +124,7 @@ class MenuResource extends Resource
 
                     Forms\Components\TextInput::make('icon')
                         ->label('Class Icon')
-                        ->placeholder('contoh: heroicon-o-home atau lucide-user')
+                        ->placeholder('contoh: heroicons:home-outline atau lucide:user')
                         ->hintAction(
                             Forms\Components\Actions\Action::make('lihatIcon')
                                 ->label('Lihat Contoh Icon')
