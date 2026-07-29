@@ -102,20 +102,39 @@ class SettingsController extends Controller
             return $opdSetting ?? $query->whereNull('opd_id')->first();
         });
 
+        // Get OPD data for dynamic social media
+        $opd = $opdId ? \App\Models\Opd::find($opdId) : null;
+        $opdSocialMedia = [];
+        if ($opd && $opd->social_media) {
+            $smArray = is_string($opd->social_media) ? json_decode($opd->social_media, true) : $opd->social_media;
+            if (is_array($smArray)) {
+                if (isset($smArray[0]) && is_array($smArray[0])) {
+                    foreach ($smArray as $item) {
+                        if (isset($item['platform'])) {
+                            $opdSocialMedia[strtolower($item['platform'])] = $item['url'] ?? '';
+                        }
+                    }
+                } else {
+                    $opdSocialMedia = $smArray;
+                }
+            }
+        }
+
         return response()->json([
             'status' => 'success',
             'data'   => [
                 'site_name'    => $setting->site_name ?? '',
                 'satuan_kerja' => $setting->satuan_kerja ?? '',
                 'logo_url'     => $setting && $setting->logo ? Storage::url($setting->logo) : null,
-                'address'      => $setting->address ?? '',
-                'phone'        => $setting->phone ?? '',
-                'email'        => $setting->email ?? '',
-                'facebook'     => $setting->facebook ?? '',
-                'instagram'    => $setting->instagram ?? '',
-                'twitter'      => $setting->twitter ?? '',
-                'youtube'      => $setting->youtube ?? '',
-                'whatsapp'     => $setting->whatsapp ?? '',
+                'address'      => $opd->alamat ?? $setting->address ?? '',
+                'phone'        => $opd->telepon ?? $setting->phone ?? '',
+                'email'        => $opd->email ?? $setting->email ?? '',
+                'facebook'     => $opdSocialMedia['facebook'] ?? $setting->facebook ?? '',
+                'instagram'    => $opdSocialMedia['instagram'] ?? $setting->instagram ?? '',
+                'twitter'      => $opdSocialMedia['twitter'] ?? $opdSocialMedia['x'] ?? $setting->twitter ?? '',
+                'youtube'      => $opdSocialMedia['youtube'] ?? $setting->youtube ?? '',
+                'whatsapp'     => $opdSocialMedia['whatsapp'] ?? $setting->whatsapp ?? '',
+                'tiktok'       => $opdSocialMedia['tiktok'] ?? '',
                 'footer_text'  => $setting->footer_text ?? '© ' . date('Y') . ' ' . ($setting->site_name ?? 'Website'),
                 'logo_tagline2_url' => $setting && $setting->logo_tagline2 ? Storage::url($setting->logo_tagline2) : null,
                 'logo_tagline3_url' => $setting && $setting->logo_tagline3 ? Storage::url($setting->logo_tagline3) : null,

@@ -75,7 +75,7 @@ Route::get('/opds/{slug}', [OpdController::class, 'show']);
 
 
 Route::get('/kritik-saran', [KritikSaranController::class, 'index']);
-Route::post('/kritik-saran', [KritikSaranController::class, 'store'])->middleware('throttle:5,1');
+Route::post('/kritik-saran', [KritikSaranController::class, 'store'])->middleware(['throttle:5,1', \App\Http\Middleware\FormSecurityMiddleware::class]);
 // modul foto
 Route::get('/fotos', [FotoController::class, 'index']);
 Route::get('/fotos/{id}', [FotoController::class, 'show']);
@@ -121,15 +121,15 @@ Route::get('/search', [SearchController::class, 'search']);
 
 
 Route::get('/polling', [PollingController::class, 'index']);
-Route::post('/polling/vote', [PollingController::class, 'vote'])->middleware('throttle:10,1');
+Route::post('/polling/vote', [PollingController::class, 'vote'])->middleware(['throttle:10,1', \App\Http\Middleware\FormSecurityMiddleware::class]);
 
 // Modul SPON TTE
 Route::get('/spon-tte/info', [TteController::class, 'getInfo']);
-Route::post('/spon-tte/register', [TteController::class, 'register'])->middleware('throttle:5,1');
-Route::post('/spon-tte/feedback', [TteController::class, 'feedback'])->middleware('throttle:5,1');
+Route::post('/spon-tte/register', [TteController::class, 'register'])->middleware(['throttle:5,1', \App\Http\Middleware\FormSecurityMiddleware::class]);
+Route::post('/spon-tte/feedback', [TteController::class, 'feedback'])->middleware(['throttle:5,1', \App\Http\Middleware\FormSecurityMiddleware::class]);
 
-Route::post('/ppid/request', [App\Http\Controllers\Api\PpidController::class, 'storeRequest'])->middleware('throttle:5,1');
-Route::post('/ppid/objection', [App\Http\Controllers\Api\PpidController::class, 'storeObjection'])->middleware('throttle:5,1');
-Route::post('/ppid/check-status', [App\Http\Controllers\Api\PpidController::class, 'checkStatus'])->middleware('throttle:20,1');
+Route::post('/ppid/request', [App\Http\Controllers\Api\PpidController::class, 'storeRequest'])->middleware(['throttle:5,1', \App\Http\Middleware\FormSecurityMiddleware::class]);
+Route::post('/ppid/objection', [App\Http\Controllers\Api\PpidController::class, 'storeObjection'])->middleware(['throttle:5,1', \App\Http\Middleware\FormSecurityMiddleware::class]);
+Route::post('/ppid/check-status', [App\Http\Controllers\Api\PpidController::class, 'checkStatus'])->middleware(['throttle:20,1', \App\Http\Middleware\FormSecurityMiddleware::class]);
 Route::get('/ppid/layanan', [App\Http\Controllers\Api\PpidController::class, 'getLayanan']);
 Route::get('/spon-tte/check-status', [TteController::class, 'checkStatus'])->middleware('throttle:20,1');

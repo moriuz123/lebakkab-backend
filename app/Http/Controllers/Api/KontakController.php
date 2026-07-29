@@ -41,7 +41,18 @@ class KontakController extends Controller
             // Parse social media JSON from OPD if available
             $opdSocialMedia = [];
             if ($opd && $opd->social_media) {
-                $opdSocialMedia = is_string($opd->social_media) ? json_decode($opd->social_media, true) : $opd->social_media;
+                $smArray = is_string($opd->social_media) ? json_decode($opd->social_media, true) : $opd->social_media;
+                if (is_array($smArray)) {
+                    if (isset($smArray[0]) && is_array($smArray[0])) {
+                        foreach ($smArray as $item) {
+                            if (isset($item['platform'])) {
+                                $opdSocialMedia[strtolower($item['platform'])] = $item['url'] ?? '';
+                            }
+                        }
+                    } else {
+                        $opdSocialMedia = $smArray;
+                    }
+                }
             }
 
             return response()->json([
@@ -55,8 +66,9 @@ class KontakController extends Controller
                     'whatsapp'      => $opdSocialMedia['whatsapp'] ?? $setting->whatsapp ?? '',
                     'facebook'      => $opdSocialMedia['facebook'] ?? $setting->facebook ?? '',
                     'instagram'     => $opdSocialMedia['instagram'] ?? $setting->instagram ?? '',
-                    'twitter'       => $opdSocialMedia['twitter'] ?? $setting->twitter ?? '',
+                    'twitter'       => $opdSocialMedia['twitter'] ?? $opdSocialMedia['x'] ?? $setting->twitter ?? '',
                     'youtube'       => $opdSocialMedia['youtube'] ?? $setting->youtube ?? '',
+                    'tiktok'        => $opdSocialMedia['tiktok'] ?? '',
                     'peta_embed'    => $opd->peta_embed ?? $setting->maps_embed ?? '',
                     'maps_link'     => $setting->maps_link ?? '',
                     'logo_url'      => $opd && $opd->logo ? Storage::url($opd->logo) : ($setting && $setting->logo ? Storage::url($setting->logo) : null),
