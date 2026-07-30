@@ -37,5 +37,40 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+
+        $this->renderable(function (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e, $request) {
+            if ($request->is('admin*')) {
+                if (auth()->check()) {
+                    \Filament\Notifications\Notification::make()
+                        ->title('Halaman Tidak Ditemukan')
+                        ->body('Halaman yang Anda tuju tidak tersedia atau salah penulisan.')
+                        ->warning()
+                        ->send();
+                    return redirect('/admin');
+                }
+            }
+        });
+
+        $this->renderable(function (\Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException $e, $request) {
+            if ($request->is('admin*') && auth()->check()) {
+                \Filament\Notifications\Notification::make()
+                    ->title('Akses Ditolak')
+                    ->body('Anda tidak memiliki izin untuk mengakses halaman atau modul tersebut.')
+                    ->danger()
+                    ->send();
+                return redirect('/admin');
+            }
+        });
+
+        $this->renderable(function (\Illuminate\Auth\Access\AuthorizationException $e, $request) {
+            if ($request->is('admin*') && auth()->check()) {
+                \Filament\Notifications\Notification::make()
+                    ->title('Akses Ditolak')
+                    ->body('Anda tidak memiliki izin untuk melakukan aksi tersebut.')
+                    ->danger()
+                    ->send();
+                return redirect('/admin');
+            }
+        });
     }
 }
