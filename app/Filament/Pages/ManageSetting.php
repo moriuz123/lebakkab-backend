@@ -14,10 +14,11 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\Grid;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 
 class ManageSetting extends Page implements HasForms
 {
-    use InteractsWithForms;
+    use InteractsWithForms, HasPageShield;
 
     protected static ?string $navigationIcon = 'heroicon-o-cog';
     protected static ?string $navigationLabel = 'Pengaturan';
