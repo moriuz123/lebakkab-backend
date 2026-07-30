@@ -26,12 +26,7 @@ class ProfilOpdResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('opd_id')
-                    ->relationship('opd', 'nama')
-                    ->label('OPD')
-                    ->required()
-                    ->searchable()
-                    ->preload(),
+                ...\App\Filament\Support\OpdFields::form(false),
                 Forms\Components\Textarea::make('latar_belakang')
                     ->columnSpanFull(),
                 Forms\Components\Textarea::make('visi')
@@ -83,7 +78,7 @@ class ProfilOpdResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                ...\App\Filament\Support\OpdFields::filters(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -109,5 +104,10 @@ class ProfilOpdResource extends Resource
             'create' => Pages\CreateProfilOpd::route('/create'),
             'edit' => Pages\EditProfilOpd::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return \App\Filament\Support\OpdFields::applyOpdScope(parent::getEloquentQuery());
     }
 }
