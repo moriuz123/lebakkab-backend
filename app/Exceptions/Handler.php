@@ -51,7 +51,7 @@ class Handler extends ExceptionHandler
                         ->body('Halaman yang Anda tuju tidak tersedia atau salah penulisan.')
                         ->warning()
                         ->send();
-                    return redirect('/admin');
+                    return new \Illuminate\Http\RedirectResponse(url('/admin'));
                 }
 
                 if ($is403) {
@@ -60,7 +60,7 @@ class Handler extends ExceptionHandler
                         ->body('Anda tidak memiliki izin untuk mengakses halaman atau modul tersebut.')
                         ->danger()
                         ->send();
-                    return redirect('/admin');
+                    return new \Illuminate\Http\RedirectResponse(url('/admin'));
                 }
             }
         });
