@@ -38,9 +38,14 @@ class Handler extends ExceptionHandler
             //
         });
 
-        $this->renderable(function (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e, $request) {
-            if ($request->is('admin*')) {
-                if (auth()->check()) {
+        $this->renderable(function (\Throwable $e, $request) {
+            if ($request->is('admin*') && auth()->check()) {
+                $is404 = $e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+                $is403 = $e instanceof \Illuminate\Auth\Access\AuthorizationException || 
+                         $e instanceof \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException ||
+                         ($e instanceof \Symfony\Component\HttpKernel\Exception\HttpException && $e->getStatusCode() === 403);
+
+                if ($is404) {
                     \Filament\Notifications\Notification::make()
                         ->title('Halaman Tidak Ditemukan')
                         ->body('Halaman yang Anda tuju tidak tersedia atau salah penulisan.')
@@ -48,28 +53,15 @@ class Handler extends ExceptionHandler
                         ->send();
                     return redirect('/admin');
                 }
-            }
-        });
 
-        $this->renderable(function (\Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException $e, $request) {
-            if ($request->is('admin*') && auth()->check()) {
-                \Filament\Notifications\Notification::make()
-                    ->title('Akses Ditolak')
-                    ->body('Anda tidak memiliki izin untuk mengakses halaman atau modul tersebut.')
-                    ->danger()
-                    ->send();
-                return redirect('/admin');
-            }
-        });
-
-        $this->renderable(function (\Illuminate\Auth\Access\AuthorizationException $e, $request) {
-            if ($request->is('admin*') && auth()->check()) {
-                \Filament\Notifications\Notification::make()
-                    ->title('Akses Ditolak')
-                    ->body('Anda tidak memiliki izin untuk melakukan aksi tersebut.')
-                    ->danger()
-                    ->send();
-                return redirect('/admin');
+                if ($is403) {
+                    \Filament\Notifications\Notification::make()
+                        ->title('Akses Ditolak')
+                        ->body('Anda tidak memiliki izin untuk mengakses halaman atau modul tersebut.')
+                        ->danger()
+                        ->send();
+                    return redirect('/admin');
+                }
             }
         });
     }
