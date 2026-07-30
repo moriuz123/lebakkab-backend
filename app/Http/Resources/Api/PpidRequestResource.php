@@ -23,7 +23,8 @@ class PpidRequestResource extends JsonResource
             'tujuan_penggunaan' => $this->tujuan_penggunaan,
             'cara_memperoleh' => $this->cara_memperoleh,
             'status' => $this->status,
-            'catatan_admin' => $this->catatan_admin,
+            'alasan_penolakan' => $this->alasan_penolakan,
+            'file_jawaban' => $this->file_jawaban,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
             // Sembunyikan KTP dan NIK/Email/No_HP dari API publik unless authenticated/admin
