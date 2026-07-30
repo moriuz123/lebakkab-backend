@@ -34,7 +34,7 @@ class OpdFields
 
         if ($withTampilDiPortal) {
             $fields[] = Toggle::make('tampil_di_portal')
-                ->label('Tampil di Portal Utama')
+                ->label('Tampil di web Lebakkab.go.id')
                 ->default(true);
         }
 
