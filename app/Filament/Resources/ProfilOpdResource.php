@@ -110,4 +110,13 @@ class ProfilOpdResource extends Resource
     {
         return \App\Filament\Support\OpdFields::applyOpdScope(parent::getEloquentQuery());
     }
+
+    public static function canCreate(): bool
+    {
+        if (auth()->check() && !auth()->user()->hasRole('super_admin') && auth()->user()->opd_id) {
+            return \App\Models\ProfilOpd::where('opd_id', auth()->user()->opd_id)->doesntExist();
+        }
+        
+        return parent::canCreate();
+    }
 }
