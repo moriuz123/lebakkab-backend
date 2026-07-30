@@ -42,7 +42,7 @@ class FormSecurityMiddleware
         }
 
         // 3. Input Sanitization (Basic XSS protection for all string inputs)
-        $input = $request->all();
+        $input = $request->except(array_keys($request->allFiles()));
         array_walk_recursive($input, function (&$value) {
             if (is_string($value)) {
                 $value = strip_tags($value);

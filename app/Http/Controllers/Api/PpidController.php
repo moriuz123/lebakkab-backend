@@ -24,7 +24,8 @@ class PpidController extends Controller
         $data['status'] = 'Menunggu';
 
         if ($request->hasFile('file_identitas')) {
-            $path = $request->file('file_identitas')->store('ppid/identitas', 's3');
+            $directory = isset($data['opd_id']) ? 'dinas-' . $data['opd_id'] . '/ppid/identitas' : 'ppid/identitas';
+            $path = $request->file('file_identitas')->store($directory, 's3');
             $data['file_identitas'] = $path;
         }
 
