@@ -23,9 +23,9 @@ class EditSetting extends EditRecord
             Forms\Components\TextInput::make('site_name')->label('Nama Website')->required(),
             Forms\Components\TextInput::make('site_description')->label('Deskripsi Website'),
             Forms\Components\FileUpload::make('logo')
-                ->disk('s3')->label('Logo')->directory('settings')->image(),
+                ->disk('s3')->label('Logo')->directory(\App\Helpers\UploadHelper::getDirectory('settings'))->image(),
             Forms\Components\FileUpload::make('favicon')
-                ->disk('s3')->label('Favicon')->directory('settings')->acceptedFileTypes(['image/x-icon']),
+                ->disk('s3')->label('Favicon')->directory(\App\Helpers\UploadHelper::getDirectory('settings'))->acceptedFileTypes(['image/x-icon']),
             Forms\Components\TextInput::make('address')->label('Alamat'),
             Forms\Components\TextInput::make('email')->label('Email')->email(),
             Forms\Components\TextInput::make('phone')->label('Telepon'),
@@ -43,14 +43,14 @@ class EditSetting extends EditRecord
             Forms\Components\TextInput::make('maps_link')->label('Link Peta'),
             Forms\Components\TextInput::make('tagline'),
             Forms\Components\FileUpload::make('logo_tagline')
-                ->disk('s3')->label('Logo Tagline')->directory('settings')->image(),
+                ->disk('s3')->label('Logo Tagline')->directory(\App\Helpers\UploadHelper::getDirectory('settings'))->image(),
             Forms\Components\TextInput::make('satuan_kerja')->label('Satuan Kerja'),
             Forms\Components\FileUpload::make('logo_hero')
-                ->disk('s3')->label('Logo Hero')->directory('settings')->image(),
+                ->disk('s3')->label('Logo Hero')->directory(\App\Helpers\UploadHelper::getDirectory('settings'))->image(),
             Forms\Components\FileUpload::make('logo_tagline2')
-                ->disk('s3')->label('Logo Tagline 2')->directory('settings')->image(),
+                ->disk('s3')->label('Logo Tagline 2')->directory(\App\Helpers\UploadHelper::getDirectory('settings'))->image(),
             Forms\Components\FileUpload::make('logo_tagline3')
-                ->disk('s3')->label('Logo Tagline 3')->directory('settings')->image(),
+                ->disk('s3')->label('Logo Tagline 3')->directory(\App\Helpers\UploadHelper::getDirectory('settings'))->image(),
             Forms\Components\Section::make('Pengaturan Tombol CTA Header')->schema([
                 Forms\Components\TextInput::make('cta_text')
                     ->label('Teks Tombol CTA')

@@ -50,7 +50,7 @@ class PpidObjectionResource extends Resource
                                 ->columnSpanFull(),
                             Forms\Components\FileUpload::make('dokumen_keputusan')
                                 ->label('Dokumen Keputusan (File Jawaban Admin)')
-                                ->directory('ppid/keputusan')
+                                ->directory(\App\Helpers\UploadHelper::getDirectory('ppid/keputusan'))
                                 ->acceptedFileTypes(['application/pdf'])
                                 ->columnSpanFull(),
                         ])->columns(2),

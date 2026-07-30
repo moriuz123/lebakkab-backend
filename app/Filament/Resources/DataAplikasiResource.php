@@ -72,7 +72,7 @@ class DataAplikasiResource extends Resource
                 ->image()
                 ->imageEditor()
                 ->imagePreviewHeight('60')
-                ->directory('aplikasi/icons')
+                ->directory(\App\Helpers\UploadHelper::getDirectory('aplikasi/icons'))
                 ->acceptedFileTypes(['image/webp', 'image/png'])
                 ->required(),
 

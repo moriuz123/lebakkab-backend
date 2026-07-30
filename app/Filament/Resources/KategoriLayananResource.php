@@ -44,7 +44,7 @@ class KategoriLayananResource extends Resource
                     ->disk('s3')
                     ->label('Thumbnail')
                     ->image()
-                    ->directory('kategori-layanan')
+                    ->directory(\App\Helpers\UploadHelper::getDirectory('kategori-layanan'))
                     ->visibility('public'),
             ]);
     }

@@ -54,7 +54,7 @@ class BannerResource extends Resource
                 ->disk('s3')
                 ->label('Gambar')
                 ->image()
-                ->directory('banner')
+                ->directory(\App\Helpers\UploadHelper::getDirectory('banner'))
                 ->preserveFilenames()
                 ->multiple()
                 ->required(),

@@ -65,7 +65,7 @@ class PpidRequestResource extends Resource
                                 ->maxLength(255),
                             Forms\Components\FileUpload::make('file_identitas')
                                 ->label('File Identitas (KTP/SK)')
-                                ->directory('ppid/identitas')
+                                ->directory(\App\Helpers\UploadHelper::getDirectory('ppid/identitas'))
                                 ->acceptedFileTypes(['application/pdf', 'image/jpeg', 'image/png']),
                         ])->columns(2),
                 ])->columnSpan(2),
@@ -98,7 +98,7 @@ class PpidRequestResource extends Resource
                                 ->columnSpanFull(),
                             Forms\Components\FileUpload::make('file_jawaban')
                                 ->label('File Jawaban (Jika Selesai)')
-                                ->directory('ppid/jawaban')
+                                ->directory(\App\Helpers\UploadHelper::getDirectory('ppid/jawaban'))
                                 ->acceptedFileTypes(['application/pdf', 'application/zip']),
                         ]),
                 ])->columnSpan(1),

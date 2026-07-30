@@ -86,7 +86,7 @@ class DokumenResource extends Resource
                 ->disk('s3')
                     ->label('File PDF')
                     ->disk('s3')
-                    ->directory('dokumens')
+                    ->directory(\App\Helpers\UploadHelper::getDirectory('dokumens'))
                     ->visibility('public')
                     ->acceptedFileTypes(['application/pdf'])
                     ->maxSize(2048)

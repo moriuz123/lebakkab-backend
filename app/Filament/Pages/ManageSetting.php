@@ -46,8 +46,8 @@ class ManageSetting extends Page implements HasForms
                         Grid::make(2)->schema([
                             TextInput::make('site_name')->label('Nama Website')->required(),
                             TextInput::make('site_description')->label('Deskripsi Website'),
-                            FileUpload::make('logo')->label('Logo')->disk(config('filesystems.default'))->image()->directory('settings')->imagePreviewHeight('100'),
-                            FileUpload::make('favicon')->label('Favicon')->disk(config('filesystems.default'))->directory('settings')->acceptedFileTypes([
+                            FileUpload::make('logo')->label('Logo')->disk(config('filesystems.default'))->image()->directory(\App\Helpers\UploadHelper::getDirectory('settings'))->imagePreviewHeight('100'),
+                            FileUpload::make('favicon')->label('Favicon')->disk(config('filesystems.default'))->directory(\App\Helpers\UploadHelper::getDirectory('settings'))->acceptedFileTypes([
                                 'image/x-icon', 
                                 'image/vnd.microsoft.icon', // Seringkali file .ico dibaca sebagai ini oleh server
                                 'image/png', 
@@ -55,10 +55,10 @@ class ManageSetting extends Page implements HasForms
                             ]),
                             TextInput::make('tagline')->label('Tagline'),
                             TextInput::make('satuan_kerja')->label('Satuan Kerja'),
-                            FileUpload::make('logo_tagline')->label('Logo Tagline')->disk(config('filesystems.default'))->directory('settings')->image(),
-                            FileUpload::make('logo_tagline2')->label('Logo Tagline 2')->disk('s3')->directory('settings')->image(),
-                            FileUpload::make('logo_tagline3')->label('Logo Tagline 3')->disk('s3')->directory('settings')->image(),
-                            FileUpload::make('backgrounds')->label('Background Hero')->disk('s3')->directory('settings')->image()->multiple()->maxFiles(3),
+                            FileUpload::make('logo_tagline')->label('Logo Tagline')->disk(config('filesystems.default'))->directory(\App\Helpers\UploadHelper::getDirectory('settings'))->image(),
+                            FileUpload::make('logo_tagline2')->label('Logo Tagline 2')->disk('s3')->directory(\App\Helpers\UploadHelper::getDirectory('settings'))->image(),
+                            FileUpload::make('logo_tagline3')->label('Logo Tagline 3')->disk('s3')->directory(\App\Helpers\UploadHelper::getDirectory('settings'))->image(),
+                            FileUpload::make('backgrounds')->label('Background Hero')->disk('s3')->directory(\App\Helpers\UploadHelper::getDirectory('settings'))->image()->multiple()->maxFiles(3),
                         ])
                     ]),
                     Tabs\Tab::make('SEO')->schema([

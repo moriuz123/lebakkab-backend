@@ -89,14 +89,14 @@ class OpdResource extends Resource
                 ->disk('s3')
                 ->label('Logo')
                 ->image()
-                ->directory('opd')
+                ->directory(\App\Helpers\UploadHelper::getDirectory('opd'))
                 ->preserveFilenames(),
 
             FileUpload::make('foto_kantor')
                 ->disk('s3')
                 ->label('Foto Kantor')
                 ->image()
-                ->directory('opd')
+                ->directory(\App\Helpers\UploadHelper::getDirectory('opd'))
                 ->preserveFilenames(),
 
             Textarea::make('peta_embed')

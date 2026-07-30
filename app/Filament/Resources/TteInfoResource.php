@@ -54,7 +54,7 @@ class TteInfoResource extends Resource
                         ->label('Gambar / Ilustrasi')
                         ->disk('s3')
                         ->image()
-                        ->directory('tte/info'),
+                        ->directory(\App\Helpers\UploadHelper::getDirectory('tte/info')),
                     Forms\Components\TextInput::make('urutan')
                         ->numeric()
                         ->default(0),

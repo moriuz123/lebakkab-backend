@@ -50,7 +50,7 @@ class HeroSliderResource extends Resource
                 ->disk('s3')
                 ->image()
                 ->imagePreviewHeight('150') // ✅ Optimasi preview image
-                ->directory('hero-sliders')
+                ->directory(\App\Helpers\UploadHelper::getDirectory('hero-sliders'))
                 ->required(),
 
             Toggle::make('aktif')->label('Tampilkan'),

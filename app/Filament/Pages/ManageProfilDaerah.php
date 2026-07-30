@@ -41,7 +41,7 @@ class ManageProfilDaerah extends Page implements HasForms
                         FileUpload::make('gambar_lambang')
                             ->label('Gambar Lambang Daerah')
                             ->disk('s3')
-                            ->directory('profil_daerah')
+                            ->directory(\App\Helpers\UploadHelper::getDirectory('profil_daerah'))
                             ->image(),
                         Textarea::make('arti_lambang')
                             ->label('Arti Lambang Daerah')

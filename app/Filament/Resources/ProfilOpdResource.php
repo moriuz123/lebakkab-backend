@@ -59,7 +59,7 @@ class ProfilOpdResource extends Resource
                 Forms\Components\FileUpload::make('struktur_organisasi')
                     ->label('Gambar Struktur Organisasi')
                     ->disk('s3')
-                    ->directory('struktur_organisasi')
+                    ->directory(\App\Helpers\UploadHelper::getDirectory('struktur_organisasi'))
                     ->image()
                     ->columnSpanFull(),
             ]);

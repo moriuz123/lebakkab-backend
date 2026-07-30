@@ -80,7 +80,7 @@ class InformasiLayananResource extends Resource
                 ->label('Cover')
                 ->image()
                 ->required()
-                ->directory('informasi-layanan')
+                ->directory(\App\Helpers\UploadHelper::getDirectory('informasi-layanan'))
                 ->visibility('public'),
 
             TextInput::make('kontak')

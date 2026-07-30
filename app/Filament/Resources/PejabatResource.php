@@ -48,7 +48,7 @@ class PejabatResource extends Resource
                     Forms\Components\FileUpload::make('foto')
                         ->label('Foto Profil')
                         ->disk('s3')
-                        ->directory('pejabat')
+                        ->directory(\App\Helpers\UploadHelper::getDirectory('pejabat'))
                         ->image()
                         ->helperText('Biarkan kosong jika ingin menggunakan foto default (inisial nama).'),
                 ])->columns(2),

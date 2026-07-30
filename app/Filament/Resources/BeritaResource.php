@@ -86,7 +86,7 @@ class BeritaResource extends Resource
                 ->label('Thumbnail')
                 ->image()
                 ->disk('s3')
-                ->directory('berita/thumbnails')
+                ->directory(\App\Helpers\UploadHelper::getDirectory('berita/thumbnails'))
                 ->required(),
 
             RichEditor::make('konten')

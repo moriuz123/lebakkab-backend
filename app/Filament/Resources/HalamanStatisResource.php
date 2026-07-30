@@ -45,7 +45,7 @@ class HalamanStatisResource extends Resource
             Forms\Components\FileUpload::make('cover')
                 ->disk('s3')
                 ->label('Cover')
-                ->directory('pages')
+                ->directory(\App\Helpers\UploadHelper::getDirectory('pages'))
                 ->image()
                 ->imagePreviewHeight(150),
 
