@@ -65,7 +65,7 @@ class PengumumanResource extends Resource
             FileUpload::make('gambar')
                 ->disk('s3')
                 ->image()
-                ->directory('pengumuman-gambar')
+                ->directory(\App\Helpers\UploadHelper::getDirectory('pengumuman-gambar'))
                 ->label('Gambar'),
 
             FileUpload::make('file_lampiran')
@@ -73,7 +73,7 @@ class PengumumanResource extends Resource
                 ->hint('(Bisa di Kosongkan Jika tidak ada.)')
                 ->label('File Lampiran')
                 ->disk('s3')
-                ->directory('pengumuman')
+                ->directory(\App\Helpers\UploadHelper::getDirectory('pengumuman'))
                 ->visibility('public'),
 
             DatePicker::make('tgl_pelaksanaan')

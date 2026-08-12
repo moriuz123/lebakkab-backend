@@ -38,7 +38,7 @@ class KategoriFotoResource extends Resource
                     ->label('Gambar Cover')
                     ->image()
                     ->imageEditor()
-                    ->directory('kategori-foto')
+                    ->directory(\App\Helpers\UploadHelper::getDirectory('kategori-foto'))
                     ->required()
                     ->maxSize(1024),
                 ...\App\Filament\Support\OpdFields::form(false),

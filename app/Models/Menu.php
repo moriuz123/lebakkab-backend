@@ -20,6 +20,8 @@ class Menu extends Model
     public const LINK_MODUL = 'modul';
     public const LINK_EKSTERNAL = 'eksternal';
     public const LINK_PARENT = 'parent';
+    public const LINK_PEJABAT = 'pejabat';
+    public const LINK_KATEGORI_BANNER = 'kategori_banner';
 
     protected $fillable = [
         'icon', // ✅ tambahkan
@@ -98,8 +100,22 @@ class Menu extends Model
                 return '/berita/kategori/' . $this->link_ref;
             case self::LINK_KATEGORI_DOKUMEN: // 🔹 kategori dokumen by slug
                 return '/dokumen/kategori/' . $this->link_ref;
+            case self::LINK_KATEGORI_BANNER:
+                return '/banner/' . $this->link_ref;
             case self::LINK_MODUL:
+                // Menyesuaikan dengan route frontend (Vue router)
+                if ($this->link_ref === 'profil-daerah') {
+                    return '/profil-kabupaten';
+                }
+                if ($this->link_ref === 'profil-opd') {
+                    return '/profil';
+                }
+                if ($this->link_ref === 'pejabat') {
+                    return '/profil-pejabat';
+                }
                 return '/' . ltrim($this->link_ref, '/');
+            case self::LINK_PEJABAT:
+                return '/profil-pejabat/' . $this->link_ref;
             case self::LINK_EKSTERNAL:
                 return $this->attributes['url'] ?? null;
             case self::LINK_PARENT:

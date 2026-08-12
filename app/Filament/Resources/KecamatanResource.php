@@ -69,7 +69,7 @@ class KecamatanResource extends Resource
                     ->image()
                     ->imageResizeMode('cover')
                     ->imagePreviewHeight(80)
-                    ->directory('kecamatan/logo'),
+                    ->directory(\App\Helpers\UploadHelper::getDirectory('kecamatan/logo')),
 
                 FileUpload::make('foto_kantor')
                 ->disk('s3')
@@ -77,7 +77,7 @@ class KecamatanResource extends Resource
                     ->image()
                     ->imageResizeMode('cover')
                     ->imagePreviewHeight(80)
-                    ->directory('kecamatan/foto_kantor'),
+                    ->directory(\App\Helpers\UploadHelper::getDirectory('kecamatan/foto_kantor')),
             ]),
 
             Grid::make(2)->schema([

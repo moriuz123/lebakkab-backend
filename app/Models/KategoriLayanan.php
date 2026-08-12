@@ -14,8 +14,8 @@ class KategoriLayanan extends Model
     protected $fillable = [
         'nama',
         'slug',
+        'thumbnail',
     ];
-
     public function informasiLayanans()
     {
         return $this->hasMany(InformasiLayanan::class);

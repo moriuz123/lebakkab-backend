@@ -27,25 +27,30 @@ class HeroSliderResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-c-arrow-right-circle';
     protected static ?string $navigationGroup = 'Manajemen Situs';
-    protected static ?string $navigationLabel = 'Hero Slider';
+    protected static ?string $navigationLabel = 'Konten Hero';
+    protected static ?string $pluralModelLabel = 'Konten Hero';
+    protected static ?string $modelLabel = 'Konten Hero';
 
     public static function form(Form $form): Form
     {
         return $form->schema([
             TextInput::make('judul')
+                ->label('Teks Selamat Datang')
                 ->required()
                 ->maxLength(255),
 
             Textarea::make('deskripsi')
+                ->label('Teks Website Resmi / Deskripsi')
                 ->rows(3)
                 ->maxLength(500)
-                ->placeholder('Teks deskripsi slider (opsional)'),
+                ->placeholder('Teks deskripsi (opsional)'),
 
             FileUpload::make('gambar')
+                ->label('Logo Hero')
                 ->disk('s3')
                 ->image()
                 ->imagePreviewHeight('150') // ✅ Optimasi preview image
-                ->directory('hero-sliders')
+                ->directory(\App\Helpers\UploadHelper::getDirectory('hero-sliders'))
                 ->required(),
 
             Toggle::make('aktif')->label('Tampilkan'),

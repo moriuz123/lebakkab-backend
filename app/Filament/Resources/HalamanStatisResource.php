@@ -34,9 +34,17 @@ class HalamanStatisResource extends Resource
             Forms\Components\TextInput::make('slug')
                 ->label('Slug')
                 ->required()
+                ->unique(
+                    table: 'halaman_statis',
+                    column: 'slug',
+                    ignoreRecord: true,
+                    modifyRuleUsing: function (\Illuminate\Validation\Rules\Unique $rule, \Filament\Forms\Get $get) {
+                        return $rule->where('opd_id', $get('opd_id') ?? auth()->user()->opd_id);
+                    }
+                )
                 ->live()
                 ->afterStateUpdated(function (?string $state, callable $set) {
-                    $set('slug', Str::slug($state));
+                    $set('slug', \Illuminate\Support\Str::slug($state));
                 }),
 
             ...\App\Filament\Support\OpdFields::form(),
@@ -45,7 +53,7 @@ class HalamanStatisResource extends Resource
             Forms\Components\FileUpload::make('cover')
                 ->disk('s3')
                 ->label('Cover')
-                ->directory('pages')
+                ->directory(\App\Helpers\UploadHelper::getDirectory('pages'))
                 ->image()
                 ->imagePreviewHeight(150),
 

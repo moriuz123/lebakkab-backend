@@ -12,6 +12,10 @@ class Setting extends Model
 
     public $timestamps = false;
 
+    protected $casts = [
+        'backgrounds' => 'array',
+    ];
+
     public function opd()
     {
         return $this->belongsTo(Opd::class);

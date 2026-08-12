@@ -18,11 +18,18 @@ class BeritaController extends Controller
     {
         $opd = $request->query('opd_id', $request->query('opd', 'all'));
         $page = $request->query('page', 1);
-        $cacheKey = "berita.index.opd_{$opd}.page_{$page}";
+        $kategori = $request->query('kategori');
+        
+        $cacheKey = "berita.index.opd_{$opd}.page_{$page}.kat_{$kategori}";
 
-        $beritas = Cache::remember($cacheKey, 3600, function () use ($request) {
-            $paginator = $this->applyOpdFilter(Berita::with(['kategori', 'opd']), $request)
-                ->published()
+        $beritas = Cache::remember($cacheKey, 3600, function () use ($request, $kategori) {
+            $query = $this->applyOpdFilter(Berita::with(['kategori', 'opd']), $request);
+            
+            if ($kategori) {
+                $query->byKategoriSlug($kategori);
+            }
+            
+            $paginator = $query->published()
                 ->orderBy('tanggal_publish', 'desc')
                 ->paginate(12);
                 

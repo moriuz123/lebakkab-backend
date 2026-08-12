@@ -55,9 +55,21 @@ class DokumenResource extends Resource
                     ->label('Deskripsi')
                     ->rows(3),
 
-                Select::make('kategori_dokumen_id')
-                    ->label('Kategori')
-                    ->relationship('kategori', 'nama', fn (\Illuminate\Database\Eloquent\Builder $query) => \App\Filament\Support\OpdFields::applyOpdScope($query))
+                Select::make('kategoris')
+                    ->label('Kategori Dokumen')
+                    ->relationship('kategoris', 'nama', function ($query, \Filament\Forms\Get $get) {
+                        $opdId = $get('opd_id');
+                        if (!auth()->user()->hasRole('super_admin')) {
+                            $opdId = auth()->user()->opd_id;
+                        }
+                        if ($opdId) {
+                            $query->where('opd_id', $opdId);
+                        }
+                        return $query->with('parent');
+                    })
+                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->parent ? "{$record->parent->nama} - {$record->nama}" : $record->nama)
+                    ->multiple()
+                    ->preload()
                     ->required(),
 
                 Radio::make('sumber_type')
@@ -74,7 +86,7 @@ class DokumenResource extends Resource
                 ->disk('s3')
                     ->label('File PDF')
                     ->disk('s3')
-                    ->directory('dokumens')
+                    ->directory(\App\Helpers\UploadHelper::getDirectory('dokumens'))
                     ->visibility('public')
                     ->acceptedFileTypes(['application/pdf'])
                     ->maxSize(2048)
@@ -102,7 +114,7 @@ class DokumenResource extends Resource
                 ->toggleable(isToggledHiddenByDefault: true)
                 ->extraAttributes(['class' => 'whitespace-normal break-words']),
 
-            \Filament\Tables\Columns\TextColumn::make('kategori.nama')
+            \Filament\Tables\Columns\TextColumn::make('kategoris.nama')
                 ->label('Kategori')
                 ->searchable()
                 ->sortable()
@@ -114,11 +126,16 @@ class DokumenResource extends Resource
             ->filters([
                 ...\App\Filament\Support\OpdFields::filters(),
 
-                Tables\Filters\SelectFilter::make('kategori_dokumen_id')
-                    ->label('Kategori')
-                    ->relationship('kategori', 'nama', fn (\Illuminate\Database\Eloquent\Builder $query) => \App\Filament\Support\OpdFields::applyOpdScope($query))
-                    ->searchable()
-                    ->preload(),
+                Tables\Filters\SelectFilter::make('kategoris')
+                    ->label('Kategori Dokumen')
+                    ->relationship('kategoris', 'nama', function ($query) {
+                        if (!auth()->user()->hasRole('super_admin') && auth()->user()->opd_id) {
+                            $query->where('opd_id', auth()->user()->opd_id);
+                        }
+                        return $query->with('parent');
+                    })
+                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->parent ? "{$record->parent->nama} - {$record->nama}" : $record->nama)
+                    ->multiple(),
             ])
             ->defaultSort('created_at', 'desc')
             ->actions([

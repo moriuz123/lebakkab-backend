@@ -14,7 +14,7 @@ class DokumenController extends Controller
 
     public function index(Request $request)
     {
-        $dokumen = $this->applyOpdFilter(Dokumen::with(['kategori', 'opd']), $request)
+        $dokumen = $this->applyOpdFilter(Dokumen::with(['kategoris', 'opd']), $request)
             ->latest()
             ->get();
 
@@ -23,7 +23,7 @@ class DokumenController extends Controller
 
     public function show(Request $request, $slug)
     {
-        $dokumen = $this->applyOpdFilter(Dokumen::with(['kategori', 'opd']), $request)
+        $dokumen = $this->applyOpdFilter(Dokumen::with(['kategoris', 'opd']), $request)
             ->where('slug', $slug)
             ->firstOrFail();
 
@@ -37,8 +37,10 @@ class DokumenController extends Controller
     {
         $kategori = KategoriDokumen::where('slug', $slug)->firstOrFail();
 
-        $dokumen = $this->applyOpdFilter(Dokumen::with(['kategori', 'opd']), $request)
-            ->where('kategori_dokumen_id', $kategori->id)
+        $dokumen = $this->applyOpdFilter(Dokumen::with(['kategoris', 'opd']), $request)
+            ->whereHas('kategoris', function($q) use ($kategori) {
+                $q->where('kategori_dokumens.id', $kategori->id);
+            })
             ->latest()
             ->get();
 

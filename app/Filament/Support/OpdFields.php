@@ -28,12 +28,13 @@ class OpdFields
                 ->nullable()
                 ->default(fn () => auth()->check() ? auth()->user()->opd_id : null)
                 ->disabled(fn () => auth()->check() && !auth()->user()->hasRole('super_admin') && auth()->user()->opd_id)
+                ->live()
                 ->dehydrated(),
         ];
 
         if ($withTampilDiPortal) {
             $fields[] = Toggle::make('tampil_di_portal')
-                ->label('Tampil di Portal Utama')
+                ->label('Tampil di web Lebakkab.go.id')
                 ->default(true);
         }
 
@@ -61,5 +62,13 @@ class OpdFields
                 ->preload()
                 ->hidden(fn () => auth()->check() && !auth()->user()->hasRole('super_admin') && auth()->user()->opd_id),
         ];
+    }
+
+    public static function getOpdIdForNewRecord(array $data)
+    {
+        if (auth()->check() && !auth()->user()->hasRole('super_admin') && auth()->user()->opd_id) {
+            return auth()->user()->opd_id;
+        }
+        return $data['opd_id'] ?? null;
     }
 }

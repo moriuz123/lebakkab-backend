@@ -10,11 +10,26 @@ class KategoriDokumen extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nama', 'slug', 'opd_id'];
+    protected $fillable = ['nama', 'slug', 'opd_id', 'parent_id'];
 
     public function opd()
     {
         return $this->belongsTo(Opd::class);
+    }
+
+    public function dokumens()
+    {
+        return $this->belongsToMany(Dokumen::class, 'dokumen_kategori');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(KategoriDokumen::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(KategoriDokumen::class, 'parent_id');
     }
 
     protected static function booted(): void

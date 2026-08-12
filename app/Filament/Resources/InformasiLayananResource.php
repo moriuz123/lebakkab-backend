@@ -80,19 +80,40 @@ class InformasiLayananResource extends Resource
                 ->label('Cover')
                 ->image()
                 ->required()
-                ->directory('informasi-layanan')
+                ->directory(\App\Helpers\UploadHelper::getDirectory('informasi-layanan'))
                 ->visibility('public'),
 
             TextInput::make('kontak')
                 ->label('Kontak')
                 ->maxLength(255),
 
-            TextInput::make('unit_pelaksana')
-                ->label('Unit Pelaksana')
-                ->default(fn () => auth()->check() && auth()->user()->opd ? auth()->user()->opd->nama : null)
-                ->disabled(fn () => auth()->check() && !auth()->user()->hasRole('super_admin') && auth()->user()->opd_id)
-                ->dehydrated()
-                ->maxLength(255),
+            Select::make('link_rujukan')
+                ->label('Link Rujukan (Pilih Aplikasi / Website OPD)')
+                ->options(function () {
+                    // Ambil opsi aplikasi berdasarkan OPD (atau semua jika superadmin)
+                    $aplikasi = \App\Filament\Support\OpdFields::applyOpdScope(\App\Models\DataAplikasi::query())
+                        ->whereNotNull('link')
+                        ->where('link', '!=', '')
+                        ->pluck('nama', 'link')
+                        ->toArray();
+
+                    // Ambil opsi website OPD
+                    $opdQuery = \App\Models\Opd::query()
+                        ->whereNotNull('website')
+                        ->where('website', '!=', '');
+                        
+                    if (auth()->check() && auth()->user()->opd_id) {
+                        $opdQuery->where('id', auth()->user()->opd_id);
+                    }
+                    
+                    $opd = $opdQuery->pluck('nama', 'website')->toArray();
+
+                    return [
+                        'Data Aplikasi' => $aplikasi,
+                        'Website OPD' => $opd,
+                    ];
+                })
+                ->searchable(),
 
             Select::make('status')
                 ->label('Status')
@@ -132,9 +153,6 @@ class InformasiLayananResource extends Resource
                     ->label('Slug')
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('unit_pelaksana')
-                    ->label('Unit'),
-
                 ...\App\Filament\Support\OpdFields::tableColumns(),
 
                 TextColumn::make('kontak')
@@ -153,16 +171,11 @@ class InformasiLayananResource extends Resource
             ->filters([
                 ...\App\Filament\Support\OpdFields::filters(),
 
-                SelectFilter::make('unit_pelaksana')
-                    ->label('Filter Unit Pelaksana')
-                    ->options(
-                        InformasiLayanan::query()
-                            ->whereNotNull('unit_pelaksana')
-                            ->distinct()
-                            ->pluck('unit_pelaksana', 'unit_pelaksana')
-                            ->toArray()
-                    )
-                    ->searchable(),
+                SelectFilter::make('kategori_layanan_id')
+                    ->label('Kategori Layanan')
+                    ->relationship('kategoriLayanan', 'nama')
+                    ->searchable()
+                    ->preload(),
             ])
             ->defaultSort('created_at', 'desc')
             ->actions([

@@ -21,12 +21,25 @@ class InformasiLayananController extends Controller
         $query = $this->applyOpdFilter(InformasiLayanan::with(['opd', 'kategoriLayanan']), $request)
             ->orderBy('created_at', 'desc');
 
-        // Jika ada limit, terapkan
+        // Jika ada limit, terapkan limit, jika tidak gunakan pagination
         if ($limit) {
-            $query->limit($limit);
+            $layanan = $query->limit($limit)->get();
+        } else {
+            $layanan = $query->paginate(12);
         }
 
-        $layanan = $query->get();
+        return response()->json($layanan);
+    }
+
+    public function byKategori(Request $request, $slug)
+    {
+        $query = $this->applyOpdFilter(InformasiLayanan::with(['opd', 'kategoriLayanan']), $request)
+            ->whereHas('kategoriLayanan', function ($q) use ($slug) {
+                $q->where('slug', $slug);
+            })
+            ->orderBy('created_at', 'desc');
+
+        $layanan = $query->paginate(12);
 
         return response()->json($layanan);
     }

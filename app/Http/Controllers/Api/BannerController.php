@@ -36,8 +36,10 @@ class BannerController extends Controller
             }
 
             return $query->get()->map(function ($banner) {
-                // Karena path 'gambar' di DB sudah lengkap, generate URL otomatis (S3/Lokal)
-                $banner->gambar_url = Storage::url($banner->gambar);
+                $gambar = is_array($banner->gambar) ? $banner->gambar : (is_string($banner->gambar) ? json_decode($banner->gambar, true) ?? [$banner->gambar] : []);
+                $banner->gambar_url = array_map(function($g) {
+                    return Storage::url($g);
+                }, $gambar);
                 return $banner;
             });
         });
@@ -56,7 +58,10 @@ class BannerController extends Controller
                 ->select('id', 'opd_id', 'tampil_di_portal', 'judul', 'gambar', 'slug', 'kategori', 'created_at')
                 ->get()
                 ->map(function ($banner) {
-                    $banner->gambar_url = Storage::url($banner->gambar);
+                    $gambar = is_array($banner->gambar) ? $banner->gambar : (is_string($banner->gambar) ? json_decode($banner->gambar, true) ?? [$banner->gambar] : []);
+                    $banner->gambar_url = array_map(function($g) {
+                        return Storage::url($g);
+                    }, $gambar);
                     return $banner;
                 });
         });

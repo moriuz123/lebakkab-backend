@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\HeroSliderController;
 use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\DataAplikasiController;
+use App\Http\Controllers\Api\KontakController;
 use App\Http\Controllers\Api\HalamanStatisController;
 use App\Http\Controllers\Api\DokumenController;
 use App\Http\Controllers\Api\OpdController;
@@ -20,6 +21,7 @@ use App\Http\Controllers\Api\MenuController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\PollingController;
 use App\Http\Controllers\Api\KritikSaranController;
+use App\Http\Controllers\Api\TteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,6 +55,8 @@ Route::get('/banner', [BannerController::class, 'index']);
 Route::get('/banner/{kategori}', [BannerController::class, 'byKategori']);
 
 // Modul data-aplikasi
+Route::get('/kontak', [KontakController::class, 'index']);
+
 Route::get('/data-aplikasi', [DataAplikasiController::class, 'index']);
 Route::get('/data-aplikasi/{id}', [DataAplikasiController::class, 'show']);
 
@@ -71,7 +75,7 @@ Route::get('/opds/{slug}', [OpdController::class, 'show']);
 
 
 Route::get('/kritik-saran', [KritikSaranController::class, 'index']);
-Route::post('/kritik-saran', [KritikSaranController::class, 'store']);
+Route::post('/kritik-saran', [KritikSaranController::class, 'store'])->middleware(['throttle:5,1', \App\Http\Middleware\FormSecurityMiddleware::class]);
 // modul foto
 Route::get('/fotos', [FotoController::class, 'index']);
 Route::get('/fotos/{id}', [FotoController::class, 'show']);
@@ -85,8 +89,10 @@ Route::get('/kecamatan', [KecamatanController::class, 'index']);
 Route::get('/kecamatan/{slug}', [KecamatanController::class, 'show']);
 
 // data informasi layanan
+Route::get('/kategori-layanan', [\App\Http\Controllers\Api\KategoriLayananController::class, 'index']);
+Route::get('/layanan/kategori/{slug}', [InformasiLayananController::class, 'byKategori']);
 Route::get('/layanan', [InformasiLayananController::class, 'index']);
-Route::get('/layanan/{id}', [InformasiLayananController::class, 'show']);
+Route::get('/layanan/{slug}', [InformasiLayananController::class, 'show']);
 
 //data agenda
 Route::get('/agendas', [AgendaController::class, 'index']);
@@ -95,9 +101,19 @@ Route::get('/agendas/{id}', [AgendaController::class, 'show']);
 
 // data menu
 Route::get('/menus/{type}', [MenuController::class, 'index']);
+use App\Http\Controllers\Api\PejabatController;
+use App\Http\Controllers\Api\ProfilDaerahController;
+
 // Modul Settings
 Route::get('/settings/header', [SettingsController::class, 'headerData']);
 Route::get('/settings/footer', [SettingsController::class, 'footerData']);
+
+// Modul Pejabat
+Route::get('/pejabat', [PejabatController::class, 'index']);
+Route::get('/pejabat/{id}', [PejabatController::class, 'show']);
+
+// Modul Profil Daerah
+Route::get('/profil-daerah', [ProfilDaerahController::class, 'index']);
 
 // Modul pencarian
 Route::get('/search', [SearchController::class, 'search']);
@@ -105,4 +121,15 @@ Route::get('/search', [SearchController::class, 'search']);
 
 
 Route::get('/polling', [PollingController::class, 'index']);
-Route::post('/polling/vote', [PollingController::class, 'vote']);
+Route::post('/polling/vote', [PollingController::class, 'vote'])->middleware(['throttle:10,1', \App\Http\Middleware\FormSecurityMiddleware::class]);
+
+// Modul SPON TTE
+Route::get('/spon-tte/info', [TteController::class, 'getInfo']);
+Route::post('/spon-tte/register', [TteController::class, 'register'])->middleware(['throttle:5,1', \App\Http\Middleware\FormSecurityMiddleware::class]);
+Route::post('/spon-tte/feedback', [TteController::class, 'feedback'])->middleware(['throttle:5,1', \App\Http\Middleware\FormSecurityMiddleware::class]);
+
+Route::post('/ppid/request', [App\Http\Controllers\Api\PpidController::class, 'storeRequest'])->middleware(['throttle:5,1', \App\Http\Middleware\FormSecurityMiddleware::class]);
+Route::post('/ppid/objection', [App\Http\Controllers\Api\PpidController::class, 'storeObjection'])->middleware(['throttle:5,1', \App\Http\Middleware\FormSecurityMiddleware::class]);
+Route::post('/ppid/check-status', [App\Http\Controllers\Api\PpidController::class, 'checkStatus'])->middleware(['throttle:20,1', \App\Http\Middleware\FormSecurityMiddleware::class]);
+Route::get('/ppid/layanan', [App\Http\Controllers\Api\PpidController::class, 'getLayanan']);
+Route::get('/spon-tte/check-status', [TteController::class, 'checkStatus'])->middleware('throttle:20,1');

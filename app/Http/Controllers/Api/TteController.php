@@ -1,0 +1,164 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\TteInfo;
+use App\Models\TteRegistration;
+use App\Models\TteFeedback;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+
+class TteController extends Controller
+{
+    public function getInfo()
+    {
+        $infos = TteInfo::orderBy('urutan', 'asc')->get();
+        return response()->json([
+            'success' => true,
+            'data' => $infos->groupBy('kategori')
+        ]);
+    }
+
+    public function register(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'instansi_type' => 'required|in:opd,kecamatan',
+            'instansi_id' => 'required|integer',
+            'nik' => 'required|string|max:20',
+            'nama_lengkap' => 'required|string|max:255',
+            'nip' => 'nullable|string|max:255',
+            'jabatan' => 'nullable|string|max:255',
+            'email' => 'required|email|max:255',
+            'no_hp' => 'required|string|max:50',
+            'surat_rekomendasi' => 'required|file|mimes:pdf|max:5120', // max 5MB
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $path = $request->file('surat_rekomendasi')->store('tte/rekomendasi', 's3');
+
+            $data = [
+                'nik' => $request->nik,
+                'nama_lengkap' => $request->nama_lengkap,
+                'nip' => $request->nip,
+                'jabatan' => $request->jabatan,
+                'email' => $request->email,
+                'no_hp' => $request->no_hp,
+                'surat_rekomendasi' => $path,
+                'status' => 'menunggu',
+            ];
+
+            if ($request->instansi_type === 'opd') {
+                $data['opd_id'] = $request->instansi_id;
+            } else {
+                $data['kecamatan_id'] = $request->instansi_id;
+            }
+
+            $registration = TteRegistration::create($data);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Pengajuan TTE berhasil dikirim.',
+                'data' => $registration
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function feedback(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'nama' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'instansi' => 'required|string|max:255',
+            'pesan' => 'required|string',
+            'rating_kemudahan' => 'nullable|integer|min:1|max:5',
+            'rating_kecepatan' => 'nullable|integer|min:1|max:5',
+            'rating_kejelasan' => 'nullable|integer|min:1|max:5',
+            'rating_pelayanan' => 'nullable|integer|min:1|max:5',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $feedback = TteFeedback::create($request->only([
+                'nama', 'email', 'instansi', 'pesan', 
+                'rating_kemudahan', 'rating_kecepatan', 'rating_kejelasan', 'rating_pelayanan'
+            ]));
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Feedback berhasil dikirim.',
+                'data' => $feedback
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function checkStatus(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'nik' => 'required|string',
+            'nip' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $query = TteRegistration::where('nik', $request->nik);
+        
+        if ($request->filled('nip')) {
+            $query->where('nip', $request->nip);
+        }
+
+        $registration = $query->latest()->first();
+
+        if ($registration) {
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'nama_lengkap' => $registration->nama_lengkap,
+                    'opd' => $registration->opd ? $registration->opd->nama : ($registration->kecamatan ? $registration->kecamatan->nama : null),
+                    'status' => $registration->status,
+                    'catatan_admin' => $registration->catatan_admin,
+                    'created_at' => $registration->created_at,
+                ]
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Data pengajuan tidak ditemukan. Pastikan NIK dan NIP sudah benar.'
+        ], 404);
+    }
+}

@@ -77,19 +77,15 @@ LebakKab Backend adalah sistem API pusat dan _dashboard_ manajemen (agregator) u
     exit
     ```
 
-5. Import Database Bawaan (Legacy):
-   Sistem ini menggunakan gabungan tabel bawaan yang sudah ada dan tabel baru dari Laravel/Filament. Anda wajib mengimpor file `portal2.sql` terlebih dahulu sebelum menjalankan _migrate_:
+5. **Import Database (Manual Import):**
+   Projek ini menggunakan pendekatan manual import file `.sql` penuh (tanpa menggunakan `migrate` dan `seed`). Anda cukup mengimpor file dump database `db_portal_latest.sql`:
 
     ```bash
-    docker exec -i backend_mysql mysql -u root -proot db_portal < portal2.sql
+    # Mengimpor file backup ke dalam container MySQL
+    docker exec -i backend_mysql mysql -u root -proot db_portal < db_portal_latest.sql
     ```
 
-6. Jalankan Migrasi & Seeder untuk Tabel Baru:
-   Setelah database bawaan terimpor, masuk kembali ke _container_ aplikasi untuk mengeksekusi migrasi tabel baru:
-    ```bash
-    docker exec -it backend_app bash
-    php artisan migrate --seed
-    ```
+   *Catatan:* Tidak perlu lagi mengesekusi `php artisan migrate` atau `php artisan db:seed` karena seluruh struktur tabel dan data awal sudah tercakup lengkap di dalam file `.sql`.
 
 7. **Migrasi Data MinIO (Saat Berpindah Server / Local ke Production):**
    File-file gambar atau media yang ada di MinIO disimpan dalam *named volume* Docker dan **tidak masuk ke dalam repositori Git**. Saat Anda mengatur *environment* baru (seperti di server *production*), Anda harus mengimpor ulang data gambarnya. Terdapat dua pilihan cara:

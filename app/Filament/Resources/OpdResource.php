@@ -46,8 +46,16 @@ class OpdResource extends Resource
                 ->dehydrated(),
 
             TextInput::make('singkatan'),
+            
+            Forms\Components\Select::make('pimpinan_id')
+                ->relationship('pejabatPimpinan', 'nama')
+                ->label('Pimpinan (Dari Data Pejabat)')
+                ->searchable()
+                ->preload(),
+
             TextInput::make('pimpinan')
-                ->label('Nama Pimpinan'),
+                ->label('Nama Pimpinan (Lama/Teks Bebas)')
+                ->helperText('Kolom lama, abaikan jika sudah memilih pimpinan di atas.'),
 
             Textarea::make('deskripsi'),
 
@@ -57,18 +65,38 @@ class OpdResource extends Resource
 
             Textarea::make('alamat'),
 
+            Forms\Components\Repeater::make('social_media')
+                ->label('Sosial Media')
+                ->schema([
+                    TextInput::make('platform')
+                        ->label('Nama Platform')
+                        ->placeholder('Contoh: Instagram / Facebook')
+                        ->required(),
+                    TextInput::make('url')
+                        ->label('URL / Link')
+                        ->url()
+                        ->required(),
+                    TextInput::make('icon_class')
+                        ->label('Class Ikon (FontAwesome/dl)')
+                        ->placeholder('Contoh: fab fa-instagram')
+                        ->helperText('Kosongkan jika frontend sudah otomatis mendeteksi dari Nama Platform')
+                ])
+                ->columns(3)
+                ->addActionLabel('Tambah Sosial Media')
+                ->columnSpanFull(),
+
             FileUpload::make('logo')
                 ->disk('s3')
                 ->label('Logo')
                 ->image()
-                ->directory('opd')
+                ->directory(\App\Helpers\UploadHelper::getDirectory('opd'))
                 ->preserveFilenames(),
 
             FileUpload::make('foto_kantor')
                 ->disk('s3')
                 ->label('Foto Kantor')
                 ->image()
-                ->directory('opd')
+                ->directory(\App\Helpers\UploadHelper::getDirectory('opd'))
                 ->preserveFilenames(),
 
             Textarea::make('peta_embed')
@@ -81,6 +109,11 @@ class OpdResource extends Resource
             Toggle::make('is_published')
                 ->label('Tampilkan di Frontend')
                 ->default(true),
+                
+            Toggle::make('is_virtual')
+                ->label('Virtual Web / Agregator')
+                ->helperText('Aktifkan jika OPD ini hanya dipakai sebagai identitas web (Contoh: Web PPID). Tidak akan muncul di daftar Instansi.')
+                ->default(false),
         ]);
     }
 
@@ -99,13 +132,26 @@ class OpdResource extends Resource
                     ->wrap(),
 
                 TextColumn::make('singkatan'),
-                TextColumn::make('pimpinan'),
+                
+                TextColumn::make('pejabatPimpinan.nama')
+                    ->label('Pimpinan')
+                    ->searchable(),
+
+                TextColumn::make('email')
+                    ->label('Email')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('telepon'),
 
                 IconColumn::make('is_published')
-                    ->label('Publikasi')
+                    ->label('Publish')
                     ->boolean(),
+
+                IconColumn::make('is_virtual')
+                    ->label('Virtual')
+                    ->boolean()
+                    ->toggleable(),
 
                 TextColumn::make('urutan'),
             ])

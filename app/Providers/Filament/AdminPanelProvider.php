@@ -25,7 +25,7 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        return $panel
+        $panel
             ->default()
             ->id('admin')
             ->brandName('Lebakkab.go.id')
@@ -46,7 +46,49 @@ class AdminPanelProvider extends PanelProvider
                 'Manajemen Situs',
             ])
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => [
+                    50 => '#e8f0fb',
+                    100 => '#d1e1f7',
+                    200 => '#a3c4f0',
+                    300 => '#75a6e8',
+                    400 => '#4789e1',
+                    500 => '#1e5ca8', // SPBE Blue
+                    600 => '#184a86',
+                    700 => '#123765',
+                    800 => '#0a2463', // SPBE Navy
+                    900 => '#071840',
+                    950 => '#040c20',
+                ],
+                'secondary' => [
+                    50 => '#fffbeb',
+                    100 => '#fef3c7',
+                    200 => '#fde68a',
+                    300 => '#fcd34d',
+                    400 => '#fbbf24',
+                    500 => '#e8a020', // SPBE Gold
+                    600 => '#d99015',
+                    700 => '#b45309',
+                    800 => '#92400e',
+                    900 => '#78350f',
+                    950 => '#451a03',
+                ],
+                'danger' => Color::Rose,
+                'gray' => Color::Slate,
+                'info' => Color::Blue,
+                'success' => Color::Emerald,
+                'warning' => [
+                    50 => '#fffbeb',
+                    100 => '#fef3c7',
+                    200 => '#fde68a',
+                    300 => '#fcd34d',
+                    400 => '#fbbf24',
+                    500 => '#e8a020',
+                    600 => '#d99015',
+                    700 => '#b45309',
+                    800 => '#92400e',
+                    900 => '#78350f',
+                    950 => '#451a03',
+                ],
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
@@ -80,7 +122,27 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ]);
 
-        // ✅ Tambahkan tombol "Lihat Website" di top bar
+        // Fetch dynamic logo and favicon from database
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasTable('settings')) {
+                $setting = \App\Models\Setting::first();
+                if ($setting) {
+                    if ($setting->logo) {
+                        $panel->brandLogo(\Illuminate\Support\Facades\Storage::disk('s3')->url($setting->logo));
+                        $panel->brandLogoHeight('3rem');
+                    }
+                    if ($setting->favicon) {
+                        $panel->favicon(\Illuminate\Support\Facades\Storage::disk('s3')->url($setting->favicon));
+                    }
+                    if ($setting->site_name) {
+                        $panel->brandName($setting->site_name);
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            // Ignore during migrations or when DB is unavailable
+        }
 
+        return $panel;
     }
 }

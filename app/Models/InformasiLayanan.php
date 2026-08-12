@@ -21,6 +21,7 @@ class InformasiLayanan extends Model
         'cover',
         'kontak',
         'unit_pelaksana',
+        'link_rujukan',
         'status',
     ];
 

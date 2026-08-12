@@ -14,10 +14,11 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\Grid;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 
 class ManageSetting extends Page implements HasForms
 {
-    use InteractsWithForms;
+    use InteractsWithForms, HasPageShield;
 
     protected static ?string $navigationIcon = 'heroicon-o-cog';
     protected static ?string $navigationLabel = 'Pengaturan';
@@ -26,65 +27,82 @@ class ManageSetting extends Page implements HasForms
 
     public array $data = [];
 
+    public ?Setting $setting = null;
+
     public function mount(): void
     {
         $opdId = auth()->user()->opd_id;
-        $setting = Setting::firstOrNew(['opd_id' => $opdId]);
-        $this->form->fill($setting->toArray());
+        $this->setting = Setting::firstOrNew(['opd_id' => $opdId]);
+        $this->form->fill($this->setting->toArray());
     }
 
     public function form(Form $form): Form
     {
         return $form
             ->statePath('data')
+            ->model($this->setting ?? Setting::class)
             ->schema([
                 Tabs::make('Pengaturan')->tabs([
                     Tabs\Tab::make('Umum')->schema([
-                        TextInput::make('site_name')->label('Nama Website')->required(),
-                        TextInput::make('site_description')->label('Deskripsi Website'),
-                        FileUpload::make('logo')->label('Logo')->disk(config('filesystems.default'))->image()->directory('settings')->imagePreviewHeight('100'),
-                        FileUpload::make('favicon')->label('Favicon')->disk(config('filesystems.default'))->directory('settings')->acceptedFileTypes([
-        'image/x-icon', 
-        'image/vnd.microsoft.icon', // Seringkali file .ico dibaca sebagai ini oleh server
-        'image/png', 
-        'image/jpeg'
-    ]),
+                        Grid::make(2)->schema([
+                            TextInput::make('site_name')->label('Nama Website')->required(),
+                            TextInput::make('site_description')->label('Deskripsi Website'),
+                            FileUpload::make('logo')->label('Logo')->disk(config('filesystems.default'))->image()->directory(\App\Helpers\UploadHelper::getDirectory('settings'))->imagePreviewHeight('100'),
+                            FileUpload::make('favicon')->label('Favicon')->disk(config('filesystems.default'))->directory(\App\Helpers\UploadHelper::getDirectory('settings'))->acceptedFileTypes([
+                                'image/x-icon', 
+                                'image/vnd.microsoft.icon', // Seringkali file .ico dibaca sebagai ini oleh server
+                                'image/png', 
+                                'image/jpeg'
+                            ]),
+                            TextInput::make('tagline')->label('Tagline'),
+                            TextInput::make('satuan_kerja')->label('Satuan Kerja'),
+                            FileUpload::make('logo_tagline')->label('Logo Tagline')->disk(config('filesystems.default'))->directory(\App\Helpers\UploadHelper::getDirectory('settings'))->image(),
+                            FileUpload::make('logo_tagline2')->label('Logo Tagline 2')->disk('s3')->directory(\App\Helpers\UploadHelper::getDirectory('settings'))->image(),
+                            FileUpload::make('logo_tagline3')->label('Logo Tagline 3')->disk('s3')->directory(\App\Helpers\UploadHelper::getDirectory('settings'))->image(),
+                            FileUpload::make('backgrounds')->label('Background Hero')->disk('s3')->directory(\App\Helpers\UploadHelper::getDirectory('settings'))->image()->multiple()->maxFiles(3),
+                        ])
                     ]),
-                    Tabs\Tab::make('Kontak')->schema([
-                        TextInput::make('address')->label('Alamat'),
-                        TextInput::make('email')->label('Email')->email(),
-                        TextInput::make('phone')->label('Telepon'),
-                        TextInput::make('whatsapp')->label('WhatsApp'),
-                    ]),
-                    Tabs\Tab::make('Sosial Media')->schema([
-                        TextInput::make('facebook')->label('Facebook'),
-                        TextInput::make('instagram')->label('Instagram'),
-                        TextInput::make('twitter')->label('Twitter'),
-                        TextInput::make('youtube')->label('YouTube'),
-                    ]),
-                    Tabs\Tab::make('SEO & Footer')->schema([
-                        TextInput::make('footer_text')->label('Teks Footer'),
+                    Tabs\Tab::make('SEO')->schema([
                         Textarea::make('meta_keywords')->label('Meta Keywords'),
                         Textarea::make('meta_description')->label('Meta Description'),
                         TextInput::make('google_analytics_id')->label('Google Analytics ID'),
                     ]),
-                    Tabs\Tab::make('Peta & Lokasi')->schema([
-                        Textarea::make('maps_embed')->label('Embed Peta'),
-                        TextInput::make('maps_link')->label('Link Peta'),
+                    Tabs\Tab::make('Footer')->schema([
+                        TextInput::make('footer_text')->label('Teks Footer'),
                     ]),
-                    Tabs\Tab::make('Pejabat')->schema([
-                        Grid::make(3)->schema([
-                            FileUpload::make('photo_bupati')->label('Foto Bupati')->disk(config('filesystems.default'))->directory('settings')->image(),
-                            FileUpload::make('logo_tagline')->label('Logo Tagline')->disk(config('filesystems.default'))->directory('settings')->image(),
-                            FileUpload::make('photo_wakil_bupati')->label('Foto Wakil Bupati')->disk(config('filesystems.default'))->directory('settings')->image(),
-                            TextInput::make('tagline')->label('Tagline'),
-                            TextInput::make('satuan_kerja')->label('Satuan Kerja'),
 
-
-
-                        ]),
-
-
+                    Tabs\Tab::make('Call to Action (CTA)')->schema([
+                        TextInput::make('cta_text')
+                            ->label('Teks Tombol CTA')
+                            ->placeholder('Contoh: Lapor Sekarang!'),
+                        \Filament\Forms\Components\Select::make('cta_link_type')
+                            ->label('Tipe Link CTA')
+                            ->options([
+                                \App\Models\Menu::LINK_MODUL => 'Modul Internal',
+                                \App\Models\Menu::LINK_EKSTERNAL => 'Eksternal',
+                            ])
+                            ->reactive(),
+                        \Filament\Forms\Components\Select::make('cta_link_ref')
+                            ->label('Pilih Modul')
+                            ->options([
+                                'profil-daerah' => 'Profil Kabupaten',
+                                'profil-opd' => 'Profil OPD',
+                                'pejabat' => 'Data Pejabat',
+                                'aplikasi' => 'Data Aplikasi',
+                                'pengumuman' => 'Pengumuman',
+                                'agenda' => 'Agenda Pemerintahan',
+                                'opd' => 'OPD',
+                                'layanan' => 'Info Layanan',
+                                'berita' => 'Semua Berita',
+                                'dokumen' => 'Semua Dokumen',
+                                'spon-tte' => 'Modul SPON TTE',
+                                'ppid' => 'Modul PPID',
+                            ])
+                            ->hidden(fn(\Filament\Forms\Get $get) => $get('cta_link_type') !== \App\Models\Menu::LINK_MODUL),
+                        TextInput::make('cta_url')
+                            ->label('URL Eksternal')
+                            ->url()
+                            ->hidden(fn(\Filament\Forms\Get $get) => $get('cta_link_type') !== \App\Models\Menu::LINK_EKSTERNAL),
                     ]),
                     Tabs\Tab::make('Lainnya')->schema([
                         Toggle::make('maintenance_mode')->label('Mode Pemeliharaan'),
@@ -100,6 +118,11 @@ class ManageSetting extends Page implements HasForms
             ['opd_id' => $opdId],
             $this->form->getState()
         );
+
+        \Illuminate\Support\Facades\Cache::forget('settings.header.' . ($opdId ?? 'global'));
+        \Illuminate\Support\Facades\Cache::forget('settings.footer.' . ($opdId ?? 'global'));
+        \Illuminate\Support\Facades\Cache::forget('settings.header.global');
+        \Illuminate\Support\Facades\Cache::forget('settings.footer.global');
 
         Notification::make()
             ->title('Pengaturan berhasil disimpan.')

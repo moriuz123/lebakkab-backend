@@ -69,7 +69,9 @@ class MenuResource extends Resource
                             Menu::LINK_HALAMAN_STATIS => 'Halaman Statis',
                             Menu::LINK_KATEGORI_BERITA => 'Kategori Berita',
                             Menu::LINK_KATEGORI_DOKUMEN => 'Kategori Dokumen',
+                            Menu::LINK_KATEGORI_BANNER => 'Kategori Banner',
                             Menu::LINK_MODUL => 'Modul',
+                            Menu::LINK_PEJABAT => 'Detail Pejabat',
                             Menu::LINK_EKSTERNAL => 'Eksternal',
                             Menu::LINK_PARENT => 'Menu Induk (tanpa link)',
                         ])
@@ -82,11 +84,14 @@ class MenuResource extends Resource
                         ->options(function (callable $get) {
                             switch ($get('link_type')) {
                                 case Menu::LINK_HALAMAN_STATIS:
-                                    return \App\Filament\Support\OpdFields::applyOpdScope(\App\Models\HalamanStatis::query())->pluck('judul', 'id');
+                                    return \App\Filament\Support\OpdFields::applyOpdScope(\App\Models\HalamanStatis::query())->pluck('judul', 'slug');
                                 case Menu::LINK_KATEGORI_BERITA:
                                     return \App\Models\Kategori::pluck('nama', 'slug');
                                 case Menu::LINK_MODUL:
                                     return collect([
+                                        'profil-daerah' => 'Profil Kabupaten',
+                                        'profil-opd' => 'Profil OPD',
+                                        'pejabat' => 'Data Pejabat',
                                         'aplikasi' => 'Data Aplikasi',
                                         'kategori_fotos' => 'Kategori Foto',
                                         'kategori_vidios' => 'Kategori Video',
@@ -96,10 +101,18 @@ class MenuResource extends Resource
                                         'opd' => 'OPD',
                                         'layanan' => 'Info Layanan',
                                         'berita' => 'Semua Berita',
+                                        'dokumen' => 'Semua Dokumen',
                                         'kecamatan' => 'Data Kecamatan',
+                                        'spon-tte' => 'Modul SPON TTE',
+                                        'ppid' => 'Modul PPID',
+                                        'kontak' => 'Kontak Kami',
                                     ]);
                                 case Menu::LINK_KATEGORI_DOKUMEN: // 🔹 ambil langsung dari tabel kategori_dokumens
                                     return \App\Models\KategoriDokumen::pluck('nama', 'slug');
+                                case Menu::LINK_KATEGORI_BANNER:
+                                    return \App\Models\KategoriBanner::pluck('nama', 'slug');
+                                case Menu::LINK_PEJABAT:
+                                    return \App\Filament\Support\OpdFields::applyOpdScope(\App\Models\Pejabat::query())->pluck('nama', 'id');
                                 default:
                                     return [];
                             }
@@ -111,7 +124,7 @@ class MenuResource extends Resource
 
                     Forms\Components\TextInput::make('icon')
                         ->label('Class Icon')
-                        ->placeholder('contoh: heroicon-o-home atau lucide-user')
+                        ->placeholder('contoh: heroicons:home-outline atau lucide:user')
                         ->hintAction(
                             Forms\Components\Actions\Action::make('lihatIcon')
                                 ->label('Lihat Contoh Icon')
