@@ -23,24 +23,33 @@ LebakKab Backend adalah sistem API pusat dan _dashboard_ manajemen (agregator) u
 
 ### Persyaratan Sistem
 
-- Docker dan Docker Compose
+- **Docker** dan **Docker Compose**
+- Git
 
-### Langkah Instalasi
+---
 
-1. Clone repositori:
+### Langkah-Langkah Instalasi
+
+1. **Clone Repositori:**
     ```bash
     git clone https://github.com/moriuz123/lebakkab-backend.git
     cd lebakkab-backend
     ```
-2. Atur _Environment Variables_:
 
+2. **Atur Environment Variables (`.env`):**
     ```bash
     cp .env.example .env
     ```
 
-    Pastikan konfigurasi MinIO sudah terpasang dengan benar di file `.env`:
-
+    Pastikan konfigurasi Database dan MinIO sudah terpasang dengan benar di file `.env`:
     ```env
+    DB_CONNECTION=mysql
+    DB_HOST=mysql
+    DB_PORT=3306
+    DB_DATABASE=db_portal
+    DB_USERNAME=root
+    DB_PASSWORD=root
+
     FILESYSTEM_DRIVER=s3
     AWS_ACCESS_KEY_ID=minioadmin
     AWS_SECRET_ACCESS_KEY=minioadmin
@@ -53,39 +62,40 @@ LebakKab Backend adalah sistem API pusat dan _dashboard_ manajemen (agregator) u
     # Konfigurasi Cache Redis
     CACHE_DRIVER=redis
     REDIS_CLIENT=predis
-    REDIS_HOST=redis
+    REDIS_HOST=backend_redis
     REDIS_PASSWORD=null
     REDIS_PORT=6379
     ```
 
-    **Catatan MinIO & Filament**:
-    - `AWS_ENDPOINT` menggunakan `minio:9000` (bukan `backend_minio`) karena AWS SDK menolak _hostname_ yang mengandung karakter _underscore_ (`_`).
-    - File _temporary_ unggahan Livewire pada form Filament disetel ke disk `local` (`config/livewire.php`) untuk menghindari _error infinite loading_ saat _preview_ gambar.
-
-3. Jalankan _container_ Docker:
-
+3. **Jalankan Container Docker:**
     ```bash
     docker-compose up -d
     ```
 
-4. Masuk ke _container_ aplikasi dan jalankan instalasi _dependency_:
-
+4. **Install Dependency & Generate Application Key:**
     ```bash
-    docker exec -it backend_app bash
-    composer install
-    php artisan key:generate
-    exit
+    docker exec -it backend_app bash -c "composer install && php artisan key:generate"
     ```
 
-5. **Import Database (Manual Import):**
-   Projek ini menggunakan pendekatan manual import file `.sql` penuh (tanpa menggunakan `migrate` dan `seed`). Anda cukup mengimpor file dump database `db_portal_latest.sql`:
+5. **Import Database Manual (`.sql`):**
+   Projek ini menggunakan pendekatan manual import file `.sql` penuh (tanpa menggunakan `migrate` dan `seed`). Impor file dump database utama (`db_portal_latest.sql`) ke dalam container MySQL `backend_mysql`:
 
-    ```bash
-    # Mengimpor file backup ke dalam container MySQL
-    docker exec -i backend_mysql mysql -u root -proot db_portal < db_portal_latest.sql
-    ```
+   * **Via Docker CLI / Terminal:**
+     ```bash
+     docker exec -i backend_mysql mysql -u root -proot db_portal < db_portal_latest.sql
+     ```
 
-   *Catatan:* Tidak perlu lagi mengesekusi `php artisan migrate` atau `php artisan db:seed` karena seluruh struktur tabel dan data awal sudah tercakup lengkap di dalam file `.sql`.
+   * **Via GUI (phpMyAdmin / DBeaver / Navicat / TablePlus):**
+     1. Connect ke MySQL host: `localhost`, port: `3307`, user: `root`, password: `root`.
+     2. Pilih database `db_portal`.
+     3. Import file `db_portal_latest.sql`.
+
+   > **⚠️ Catatan Penting:** File migration dan seeder telah dihapus dari repositori ini. **Jangan** pernah mengesekusi `php artisan migrate` atau `php artisan db:seed` karena seluruh struktur tabel dan data awal sudah tercakup lengkap di dalam file `db_portal_latest.sql`.
+
+6. **Selesai:**
+   Aplikasi backend dan admin panel Filament siap digunakan:
+   - **Backend API & Admin Panel:** [http://localhost:8000/admin](http://localhost:8000/admin)
+   - **MinIO Console:** [http://localhost:9001](http://localhost:9001) (User: `minioadmin` / Pass: `minioadmin`)
 
 7. **Migrasi Data MinIO (Saat Berpindah Server / Local ke Production):**
    File-file gambar atau media yang ada di MinIO disimpan dalam *named volume* Docker dan **tidak masuk ke dalam repositori Git**. Saat Anda mengatur *environment* baru (seperti di server *production*), Anda harus mengimpor ulang data gambarnya. Terdapat dua pilihan cara:
