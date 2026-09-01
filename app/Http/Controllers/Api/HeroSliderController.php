@@ -22,8 +22,13 @@ class HeroSliderController extends Controller
             $query->whereNull('opd_id');
         }
 
-        return response()->json(
-            $query->where('aktif', 1)->orderBy('order')->get()
-        );
+        $sliders = $query->where('aktif', 1)->orderBy('order')->get();
+        
+        $sliders->transform(function ($item) {
+            $item->gambar = $item->gambar ? \Illuminate\Support\Facades\Storage::url($item->gambar) : null;
+            return $item;
+        });
+
+        return response()->json($sliders);
     }
 }
