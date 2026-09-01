@@ -9,8 +9,15 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles; // ← Tambahkan ini
 
-class User extends Authenticatable
+use Filament\Models\Contracts\FilamentUser;
+
+class User extends Authenticatable implements FilamentUser
 {
+    public function canAccessFilament(): bool
+    {
+        return true;
+    }
+
     use HasApiTokens, HasFactory, Notifiable, HasRoles; // ← Tambahkan HasRoles di sini
 
     /**
