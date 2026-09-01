@@ -107,6 +107,9 @@ class Menu extends Model
                 if ($this->link_ref === 'profil-daerah') {
                     return '/profil-kabupaten';
                 }
+                if ($this->link_ref === 'kecamatans') {
+                    return '/kecamatan';
+                }
                 if ($this->link_ref === 'profil-opd') {
                     return '/profil';
                 }

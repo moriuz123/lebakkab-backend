@@ -95,7 +95,6 @@ class MenuResource extends Resource
                                         'aplikasi' => 'Data Aplikasi',
                                         'kategori_fotos' => 'Kategori Foto',
                                         'kategori_vidios' => 'Kategori Video',
-                                        'kecamatans' => 'Kecamatan',
                                         'pengumuman' => 'Pengumuman',
                                         'agenda' => 'Agenda Pemerintahan',
                                         'opd' => 'OPD',
