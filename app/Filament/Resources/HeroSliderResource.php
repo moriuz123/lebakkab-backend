@@ -48,6 +48,7 @@ class HeroSliderResource extends Resource
             FileUpload::make('gambar')
                 ->label('Logo Hero')
                 ->disk('s3')
+                ->visibility('public')
                 ->image()
                 ->imagePreviewHeight('150') // ✅ Optimasi preview image
                 ->directory(\App\Helpers\UploadHelper::getDirectory('hero-sliders'))
@@ -75,6 +76,7 @@ class HeroSliderResource extends Resource
             ->columns([
                 ImageColumn::make('gambar')
                     ->disk('s3')
+                    ->visibility('public')
                     ->height(75)
                     ->width(100)
                     ->square(),
