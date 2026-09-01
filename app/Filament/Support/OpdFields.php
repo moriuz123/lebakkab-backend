@@ -13,12 +13,7 @@ class OpdFields
     public static function applyOpdScope(Builder $query): Builder
     {
         if (auth()->check() && !auth()->user()->hasRole('super_admin') && auth()->user()->opd_id) {
-            $table = $query->getModel()->getTable();
-            if ($table === 'opds') {
-                $query->where($table . '.id', auth()->user()->opd_id);
-            } else {
-                $query->where($table . '.opd_id', auth()->user()->opd_id);
-            }
+            $query->where('opd_id', auth()->user()->opd_id);
         }
         return $query;
     }
