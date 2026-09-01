@@ -20,3 +20,7 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 WORKDIR /var/www/html
+
+# 4. Tambahkan limit upload (50MB)
+RUN echo "upload_max_filesize = 50M" > /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "post_max_size = 50M" >> /usr/local/etc/php/conf.d/uploads.ini

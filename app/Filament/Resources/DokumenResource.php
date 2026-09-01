@@ -89,7 +89,7 @@ class DokumenResource extends Resource
                     ->directory(\App\Helpers\UploadHelper::getDirectory('dokumens'))
                     ->visibility('public')
                     ->acceptedFileTypes(['application/pdf'])
-                    ->maxSize(2048)
+                    ->maxSize(10240)
                     ->required(fn($get) => $get('sumber_type') === 'upload')
                     ->hidden(fn($get) => $get('sumber_type') !== 'upload'),
 
