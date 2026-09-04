@@ -73,7 +73,8 @@ class ImportWpArtikel extends Command
                     ->get("https://diskominfosp.lebakkab.go.id/wp-json/wp/v2/posts", [
                         'per_page' => 50,
                         'page' => $page,
-                        'categories' => 28, // Hanya kategori Artikel dari WP lama
+                        'categories' => 5, // Berita Pemerintahan Lebak
+                        'after' => '2026-07-03T00:00:00', // Dari tanggal 3 Juli 2026
                         '_embed' => true, // Untuk ambil thumbnail
                     ]);
 
@@ -94,7 +95,7 @@ class ImportWpArtikel extends Command
                 foreach ($posts as $post) {
                     $slug = urldecode($post['slug']);
 
-                    if (Berita::where('slug', $slug)->exists()) {
+                    if (Berita::withTrashed()->where('slug', $slug)->exists()) {
                         $this->line("Melewati: {$slug} (sudah ada)");
                         continue;
                     }
@@ -118,24 +119,27 @@ class ImportWpArtikel extends Command
                     }
 
                     // Insert ke Database
-                    Berita::create([
-                        'opd_id' => $opdId,
-                        'kategori_id' => $kategoriId,
-                        'judul' => html_entity_decode($post['title']['rendered']),
-                        'slug' => $slug,
-                        'konten' => $post['content']['rendered'],
-                        'thumbnail' => $thumbnailPath,
-                        'status' => 'published',
-                        'tanggal_publish' => $post['date'],
-                        'is_active' => true,
-                        'tampil_di_portal' => true,
-                        'user_id' => $userId,
-                        'created_at' => $post['date'],
-                        'updated_at' => $post['modified'],
-                    ]);
-
-                    $this->info("Berhasil import: " . html_entity_decode($post['title']['rendered']));
-                    $totalMigrated++;
+                    try {
+                        Berita::create([
+                            'opd_id' => $opdId,
+                            'kategori_id' => $kategoriId,
+                            'judul' => html_entity_decode($post['title']['rendered']),
+                            'slug' => $slug,
+                            'konten' => $post['content']['rendered'],
+                            'thumbnail' => $thumbnailPath,
+                            'status' => 'published',
+                            'tanggal_publish' => $post['date'],
+                            'is_active' => true,
+                            'tampil_di_portal' => true,
+                            'user_id' => $userId,
+                            'created_at' => $post['date'],
+                            'updated_at' => $post['modified'],
+                        ]);
+                        $this->info("Berhasil import: " . html_entity_decode($post['title']['rendered']));
+                        $totalMigrated++;
+                    } catch (\Exception $e) {
+                        $this->error("Gagal import {$slug}: " . $e->getMessage());
+                    }
                 }
 
                 $page++;
