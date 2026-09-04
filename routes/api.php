@@ -80,6 +80,9 @@ Route::post('/kritik-saran', [KritikSaranController::class, 'store'])->middlewar
 Route::get('/fotos', [FotoController::class, 'index']);
 Route::get('/fotos/{id}', [FotoController::class, 'show']);
 
+// modul youtube live
+Route::get('/youtube-live', [\App\Http\Controllers\Api\YoutubeLiveController::class, 'status']);
+
 // modul vidio
 Route::get('/vidios', [VidioController::class, 'index']);
 Route::get('/vidios/{id}', [VidioController::class, 'show']);
