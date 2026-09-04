@@ -19,16 +19,16 @@ class YoutubeLiveController extends Controller
                 
                 return [
                     'is_live' => $isLive,
-                    'channel_id' => 'UC9DyIYVNcNOgB5FyoVyZO5J',
-                    'live_url' => 'https://www.youtube.com/embed/live_stream?channel=UC9DyIYVNcNOgB5FyoVyZO5J&autoplay=1',
-                    'offline_url' => 'https://www.youtube.com/embed/videoseries?list=UU9DyIYVNcNOgB5FyoVyZO5J'
+                    'channel_id' => 'UCF-ZLoJzm7dWAh7xotxwEQA',
+                    'live_url' => 'https://www.youtube.com/embed/live_stream?channel=UCF-ZLoJzm7dWAh7xotxwEQA&autoplay=1',
+                    'offline_url' => 'https://www.youtube.com/embed/videoseries?list=UUF-ZLoJzm7dWAh7xotxwEQA'
                 ];
             } catch (\Exception $e) {
                 return [
                     'is_live' => false,
-                    'channel_id' => 'UC9DyIYVNcNOgB5FyoVyZO5J',
-                    'live_url' => 'https://www.youtube.com/embed/live_stream?channel=UC9DyIYVNcNOgB5FyoVyZO5J&autoplay=1',
-                    'offline_url' => 'https://www.youtube.com/embed/videoseries?list=UU9DyIYVNcNOgB5FyoVyZO5J'
+                    'channel_id' => 'UCF-ZLoJzm7dWAh7xotxwEQA',
+                    'live_url' => 'https://www.youtube.com/embed/live_stream?channel=UCF-ZLoJzm7dWAh7xotxwEQA&autoplay=1',
+                    'offline_url' => 'https://www.youtube.com/embed/videoseries?list=UUF-ZLoJzm7dWAh7xotxwEQA'
                 ];
             }
         });
