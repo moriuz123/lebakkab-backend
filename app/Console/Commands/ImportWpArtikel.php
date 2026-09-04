@@ -151,6 +151,11 @@ class ImportWpArtikel extends Command
             }
         }
 
+        if ($totalMigrated > 0) {
+            $this->info("Menghapus cache berita...");
+            \Illuminate\Support\Facades\Artisan::call('cache:clear');
+        }
+
         $this->info("Migrasi Selesai! Total Artikel yang dipindahkan: {$totalMigrated}");
     }
 }
