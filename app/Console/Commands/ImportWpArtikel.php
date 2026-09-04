@@ -69,7 +69,8 @@ class ImportWpArtikel extends Command
             
             try {
                 $response = Http::withoutVerifying()
-                    ->timeout(30)
+                    ->timeout(120)
+                    ->connectTimeout(60)
                     ->get("https://diskominfosp.lebakkab.go.id/wp-json/wp/v2/posts", [
                         'per_page' => 50,
                         'page' => $page,
@@ -105,7 +106,7 @@ class ImportWpArtikel extends Command
                     if (isset($post['_embedded']['wp:featuredmedia'][0]['source_url'])) {
                         $imageUrl = $post['_embedded']['wp:featuredmedia'][0]['source_url'];
                         try {
-                            $imageContent = Http::withoutVerifying()->timeout(20)->get($imageUrl)->body();
+                            $imageContent = Http::withoutVerifying()->timeout(60)->connectTimeout(30)->get($imageUrl)->body();
                             $extension = pathinfo($imageUrl, PATHINFO_EXTENSION);
                             if (!$extension) $extension = 'jpg';
                             
